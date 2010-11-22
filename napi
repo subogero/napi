@@ -1,14 +1,15 @@
 #!/bin/ash
 PICS=`curl 'http://napirajz.hu' 2>/dev/null \
 | sed -nr 's,^ *<p><img src=\"([a-z0-9/_.]+)\".+$,http://napirajz.hu\1,p'`
-echo $PICS | xargs wget -nc 2>/dev/null
+rm -f *.jp*
 echo '<html>'
 echo '<head><title>subogero napi</title></head>'
 echo '<body>'
 echo '<h1>subogero napi</h1>'
 echo '<hr>'
 for i in $PICS; do
-  echo $i | sed -r 's,^.+/([a-z0-9_.]+)$,<p><a href=\"\1\">\1</a>,'
+  wget $i
+  echo $i | sed -r 's,^.+/([a-z0-9_.]+)$,<p><a href=\"napi/\1\">\1</a>,'
 done
 echo '<hr>'
 echo '(c) CC - Mer&eacute;nyi D&aacute;niel'
