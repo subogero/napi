@@ -5,7 +5,7 @@ rm -f *.jp*
 echo '<html>'
 echo '<head><title>subogero napi</title></head>'
 echo '<body>'
-echo '<h1>subogero napi</h1>'
+echo '<h1 align="center">subogero napi</h1>'
 echo '<hr>'
 for i in $PICS; do
   wget $i
@@ -13,8 +13,8 @@ for i in $PICS; do
 done
 echo '<hr>'
 echo '(c) CC - Mer&eacute;nyi D&aacute;niel'
-echo '<p>Friss&iacute;tve:' 
+echo '<br>Eredeti: h t t p : / / n a p i r a j z . h u'
+echo '<p>Friss&iacute;tve:'
 date "+%Y.%m.%d %H:%M"
 echo '</body>'
 echo '</html>'
-
