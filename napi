@@ -1,6 +1,6 @@
 #!/bin/ash
 PICS=`curl 'http://napirajz.hu' 2>/dev/null \
-| sed -nr 's,^ *<p><img src=\"([a-z0-9/_.]+)\".+$,http://napirajz.hu\1,p'`
+| sed -nr 's,^[\t ]*<p><img src=\"([a-z0-9/_.]+)\".+$,http://napirajz.hu\1,p'`
 rm -f *.jp*
 echo '<html>'
 echo '<head><title>subogero napi</title></head>'
