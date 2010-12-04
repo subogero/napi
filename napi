@@ -9,7 +9,7 @@ echo '<h1 align="center">subogero napi</h1>'
 echo '<hr>'
 for i in $PICS; do
   wget $i
-  echo $i | sed -r 's,^.+/([a-z0-9_]+)(\.[jpeg]+)$,<br><a href=\"napi/\1\2\">\1</a>,'
+  echo $i | sed -r 's,^.+/([a-z0-9_]+)(\.[jpeg]+)$,<a href=\"napi/\1\2\">\1</a><br>,'
 done
 echo '<hr>'
 echo '(c) CC - Mer&eacute;nyi D&aacute;niel'
