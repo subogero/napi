@@ -16,5 +16,9 @@ echo '(c) CC - Mer&eacute;nyi D&aacute;niel'
 echo '<br>Eredeti: h t t p : / / n a p i r a j z . h u'
 echo '<p>Friss&iacute;tve:'
 date "+%Y.%m.%d %H:%M"
+echo '<hr>'
+echo "Ez az oldal azok sz&aacute;m&aacute;ra k&eacute;sz&uuml;lt,"
+echo "akiket a c&eacute;ges internet proxy megfosztott a napi rajz"
+echo "ny&uacute;jtotta inspir&aacute;ci&oacute;t&oacute;l."
 echo '</body>'
 echo '</html>'
