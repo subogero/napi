@@ -1,53 +1,43 @@
 #!/bin/ash
-# get year and month of archives from args, otherwise use main page.
-YEAR=$1
-MONTH=$2
+# Get year and month of archives from args, otherwise generate main page.
+YEAR=$1; MONTH=$2
 if [ -n "$MONTH" ]; then
   URL="archives/${YEAR}/${MONTH}/"
   FILE="${YEAR}_${MONTH}.html"
-elif [ -n "$YEAR" ]; then
-  URL="archives/${YEAR}/"
-  FILE="${YEAR}/"
 else
   FILE="index.html"
 fi
 
-# attempt to retrieve webpage, or exit to avoid deleting data
-curl -f "http://napirajz.hu/${URL}" >tmp #2>/dev/null
-if [ $? != 0 ]; then
-  rm tmp
-  exit 1
-fi
+# OpenWRT's uhttpd screws up paths via symlinks, extra napi/ needed in links.
+uname -a | grep -i wrt && FOLDER=napi/ || WGETOPT=-nc
 
-# extract picture URLs from webpage
-PICS=`cat tmp | sed -nr 's,^.+<img src=\"(/files/[/A-Za-z0-9_.]+)\".+$,http://napirajz.hu\1,p'`
-#rm tmp
-#rm -f *.jp*
+# Try to retrieve webpage, or exit to avoid deleting data, get picture URLs
+curl -f "http://napirajz.hu/${URL}" >tmp || exit 1 
+PICS=`cat tmp \
+| sed -nr 's,^.+<img src=\"(/files/[/A-Za-z0-9_.]+)\".+$,http://napirajz.hu\1,p'`
 
-# print page header
+# Print page header
 cat > $FILE <<HEADER
-<html>
-<head><title>subogero napi $YEAR $MONTH </title></head>
-<body>
-<hr><h1 align="center">subogero napi $YEAR $MONTH </h1><hr>
+<html><head><title>subogero napi $YEAR $MONTH </title></head>
+<body><hr><h1 align="center">subogero napi $YEAR $MONTH </h1><hr>
 HEADER
 
-# retrieve pictures and print links to copies
+# Get pictures and print links to copies
 for i in $PICS; do
-  wget -nc $i
-  echo $i | sed -r 's,^.+/([A-Za-z0-9_]+)(\.[jpeg]+)$,<a href=\"napi/\1\2\">\1</a><br>,' >> $FILE
+  wget "$WGETOPT" $i
+  echo $i \
+  | sed -r 's,^.+/([A-Za-z0-9_]+)(\.[jpeg]+)$,<a href=\"'"${FOLDER}"'\1\2\">\1</a><br>,' \
+  >> $FILE
 done
 
-# print page footer
+# Print page footer
 cat >> $FILE <<FOOTER
-<hr>
-(c) CC - Mer&eacute;nyi D&aacute;niel
+<hr> (c) CC - Mer&eacute;nyi D&aacute;niel
 <br>Eredeti: h t t p : / / n a p i r a j z . h u
-<p>
-Ez az oldal azok sz&aacute;m&aacute;ra k&eacute;sz&uuml;lt,
+<p>Ez az oldal azok sz&aacute;m&aacute;ra k&eacute;sz&uuml;lt,
 akiket a c&eacute;ges internet proxy megfosztott a napi rajz
 ny&uacute;jtotta inspir&aacute;ci&oacute;t&oacute;l.
-</body>
-</html>
+<hr>Friss&iacute;tve: `date "+%Y.%m.%d - %H:%M"`
+</body></html>
 FOOTER
 
