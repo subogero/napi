@@ -1,32 +1,53 @@
 #!/bin/ash
-curl -f 'http://napirajz.hu' >tmp 2>/dev/null
+# get year and month of archives from args, otherwise use main page.
+YEAR=$1
+MONTH=$2
+if [ -n "$MONTH" ]; then
+  URL="archives/${YEAR}/${MONTH}/"
+  FILE="${YEAR}_${MONTH}.html"
+elif [ -n "$YEAR" ]; then
+  URL="archives/${YEAR}/"
+  FILE="${YEAR}/"
+else
+  FILE="index.html"
+fi
+
+# attempt to retrieve webpage, or exit to avoid deleting data
+curl -f "http://napirajz.hu/${URL}" >tmp #2>/dev/null
 if [ $? != 0 ]; then
-  cat index.html~
   rm tmp
   exit 1
 fi
-PICS=`cat tmp | sed -nr 's,^.+<img src=\"(/files/[A-Za-z0-9_.]+)\".+$,http://napirajz.hu\1,p'`
-rm tmp
-rm -f *.jp*
-echo '<html>'
-echo '<head><title>subogero napi</title></head>'
-echo '<body>'
-echo '<h1 align="center">subogero napi</h1>'
-echo '<hr>'
+
+# extract picture URLs from webpage
+PICS=`cat tmp | sed -nr 's,^.+<img src=\"(/files/[/A-Za-z0-9_.]+)\".+$,http://napirajz.hu\1,p'`
+#rm tmp
+#rm -f *.jp*
+
+# print page header
+cat > $FILE <<HEADER
+<html>
+<head><title>subogero napi $YEAR $MONTH </title></head>
+<body>
+<hr><h1 align="center">subogero napi $YEAR $MONTH </h1><hr>
+HEADER
+
+# retrieve pictures and print links to copies
 for i in $PICS; do
-  wget $i
-  echo $i | sed -r 's,^.+/([A-Za-z0-9_]+)(\.[jpeg]+)$,<a href=\"napi/\1\2\">\1</a><br>,'
+  wget -nc $i
+  echo $i | sed -r 's,^.+/([A-Za-z0-9_]+)(\.[jpeg]+)$,<a href=\"napi/\1\2\">\1</a><br>,' >> $FILE
 done
-echo '<hr>'
-echo '(c) CC - Mer&eacute;nyi D&aacute;niel'
-echo '<br>Eredeti: h t t p : / / n a p i r a j z . h u'
-echo '<p>'
-echo "Ez az oldal azok sz&aacute;m&aacute;ra k&eacute;sz&uuml;lt,"
-echo "akiket a c&eacute;ges internet proxy megfosztott a napi rajz"
-echo "ny&uacute;jtotta inspir&aacute;ci&oacute;t&oacute;l."
-echo '<hr>'
-echo '<p>Friss&iacute;tve:'
-date "+%Y.%m.%d %H:%M"
-echo '</body>'
-echo '</html>'
-cp -f index.html index.html~
+
+# print page footer
+cat >> $FILE <<FOOTER
+<hr>
+(c) CC - Mer&eacute;nyi D&aacute;niel
+<br>Eredeti: h t t p : / / n a p i r a j z . h u
+<p>
+Ez az oldal azok sz&aacute;m&aacute;ra k&eacute;sz&uuml;lt,
+akiket a c&eacute;ges internet proxy megfosztott a napi rajz
+ny&uacute;jtotta inspir&aacute;ci&oacute;t&oacute;l.
+</body>
+</html>
+FOOTER
+
