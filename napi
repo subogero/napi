@@ -24,7 +24,7 @@ HEADER
 
 # Get pictures and print links to copies
 for i in $PICS; do
-  wget "$WGETOPT" $i
+  wget "${WGETOPT}${i}"
   echo $i \
   | sed -r 's,^.+/([A-Za-z0-9_]+)(\.[jpeg]+)$,<a href=\"'"${FOLDER}"'\1\2\">\1</a><br>,' \
   >> $FILE
