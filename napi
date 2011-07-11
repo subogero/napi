@@ -1,30 +1,33 @@
-#!/bin/ash
-# Get year and month of archives from args, otherwise generate main page.
-YEAR=$1; MONTH=$2
-if [ -n "$MONTH" ]; then
-  URL="archives/${YEAR}/${MONTH}/"
-  FILE="${YEAR}_${MONTH}.html"
+#!/bin/sh
+# Get archive URL in agr1, otherwise use main page. Generate filename.
+URL=$1
+if [ -n "$URL" ]; then
+  MONTH=`echo $URL | sed -r 's,^.+([0-9]{4})/([0-9]{2}).+$,\1_\2,'`
+  FILE="${MONTH}.html"
+  [ -f $FILE ] && echo $FILE && exit 0
 else
+  URL="http://napirajz.hu/"
   FILE="index.html"
 fi
+echo "napi $URL $FILE" >&2
 
-# OpenWRT's uhttpd screws up paths via symlinks, extra napi/ needed in links.
+# Set up wget options depending on system, no -nc option on OpenWRT
 uname -a | grep -i wrt || WGETOPT=-nc
 
 # Try to retrieve webpage, or exit to avoid deleting data, get picture URLs
-curl -f "http://napirajz.hu/${URL}" >tmp || exit 1 
+curl -f ${URL} >tmp || exit 1 
 PICS=`cat tmp \
 | sed -nr 's,^.+<img src=\"(/files/[/A-Za-z0-9_.]+)\".+$,http://napirajz.hu\1,p'`
 
 # Print page header
 cat > $FILE <<HEADER
-<html><head><title>subogero napi $YEAR $MONTH </title></head>
-<body><hr><h1 align="center">subogero napi $YEAR $MONTH </h1><hr>
+<html><head><title>subogero napi $MONTH </title></head>
+<body><hr><h1 align="center">subogero napi $MONTH </h1><hr>
 HEADER
 
 # Get pictures and print links to copies
 for i in $PICS; do
-  wget "${WGETOPT}${i}"
+  wget ${WGETOPT} "${i}"
   echo $i \
   | sed -r 's,^.+/([A-Za-z0-9_]+)(\.[jpeg]+)$,<a href=\"\1\2\">\1</a><br>,' \
   >> $FILE
@@ -40,4 +43,7 @@ ny&uacute;jtotta inspir&aacute;ci&oacute;t&oacute;l.
 <hr>Friss&iacute;tve: `date "+%Y.%m.%d - %H:%M"`
 </body></html>
 FOOTER
+
+# Return value
+echo $FILE
 
