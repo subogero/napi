@@ -17,12 +17,13 @@ uname -a | grep -i wrt >/dev/null || WGETOPT=-nc
 # Try to retrieve webpage, or exit to avoid deleting data, get picture URLs
 curl -f ${URL} >tmp 2>/dev/null || exit 1 
 for i in \
-'s,^.+<img src=\"(/files/[/A-Za-z0-9_.]+)\".+$,http://napirajz.hu\1,p' \
-'s,^.+<img src=\"(http://napirajz.freeblog.hu/Files/[A-Za-z0-9_.]+)\".+$,\1,p' \
-'s,^.+<img src=\"(http://napirajz.hu/files/[A-Za-z0-9_.]+)\".+$,\1,p';
-do
-  PICS=`cat tmp | sed -nr "$i"`
-  [ -n "$PICS" ] && echo >&2 "$i\n$PICS" && break
+while true; do
+  PICS=`cat tmp | sed -nr 's,^.+<img src=\"(/files/[/A-Za-z0-9_.]+)\".+$,http://napirajz.hu\1,p'`
+  [ -n "$PICS" ] && echo >&2 "regex 1" && break
+  PICS=`cat tmp | sed -nr 's,^.+<img src=\"(http://napirajz.freeblog.hu/Files/[A-Za-z0-9_.]+)\".+$,\1,p'`
+  [ -n "$PICS" ] && echo >&2 "regex 2" && break
+  PICS=`cat tmp | sed -nr 's,^.+<img src=\"(http://napirajz.hu/files/[A-Za-z0-9_.]+)\".+$,\1,p'`
+                    echo >&2 "regex 3" && break
 done
 
 # Print page header
