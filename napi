@@ -16,7 +16,6 @@ uname -a | grep -i wrt >/dev/null || WGETOPT=-nc
 
 # Try to retrieve webpage, or exit to avoid deleting data, get picture URLs
 curl -f ${URL} >tmp 2>/dev/null || exit 1 
-for i in \
 while true; do
   PICS=`cat tmp | sed -nr 's,^.+<img src=\"(/files/[/A-Za-z0-9_.]+)\".+$,http://napirajz.hu\1,p'`
   [ -n "$PICS" ] && echo >&2 "regex 1" && break
@@ -25,6 +24,7 @@ while true; do
   PICS=`cat tmp | sed -nr 's,^.+<img src=\"(http://napirajz.hu/files/[A-Za-z0-9_.]+)\".+$,\1,p'`
                     echo >&2 "regex 3" && break
 done
+echo >&2 $PICS
 
 # Print page header
 cat > $FILE <<HEADER
@@ -36,7 +36,7 @@ HEADER
 for i in $PICS; do
   wget ${WGETOPT} "${i}"
   echo $i \
-  | sed -r 's,^.+/([A-Za-z0-9_]+)(\.[jpeg]+)$,<a href=\"\1\2\">\1</a><br>,i' \
+  | sed -r 's,^.+/([A-Za-z0-9_]+)(\.[jpegJPG]+)$,<a href=\"\1\2\">\1</a><br>,' \
   >> $FILE
 done
 
