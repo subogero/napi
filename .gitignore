@@ -1,5 +1,7 @@
 *.html
 *.jpg
 *.jpeg
+*.JPG
+log
 tmp
 
