@@ -5,7 +5,6 @@ FILE=tegnapi.html
 curl -f "http://napirajz.hu/archives/" >tmp || exit 1 
 PAGES=`cat tmp \
 | sed -nr 's,^.+<li><a href=\"(http://napirajz.hu/archives/[0-9]{4}/[0-9]{2}/)\".+$,\1,p'`
-echo $PAGES
 
 # Print page header
 cat > $FILE <<HEADER

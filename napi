@@ -12,7 +12,7 @@ fi
 echo "napi $URL $FILE" >&2
 
 # Set up wget options depending on system, no -nc option on OpenWRT
-uname -a | grep -i wrt || WGETOPT=-nc
+uname -a | grep -i wrt >/dev/null || WGETOPT=-nc
 
 # Try to retrieve webpage, or exit to avoid deleting data, get picture URLs
 curl -f ${URL} >tmp || exit 1 
