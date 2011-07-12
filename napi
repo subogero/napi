@@ -16,11 +16,11 @@ curl -f ${URL} >tmp 2>/dev/null || exit 1
 
 # Get picture URLs, try different patterns
 while true; do
-  PICS=`cat tmp | sed -nr 's,^[ \t]+<img src=\"(/files/[/A-Za-z0-9_.]+)\".+\r?$,http://napirajz.hu\1,p'`
+  PICS=`cat tmp | sed -nr 's,^[ \t<p>]*<img src=\"(/[fF]iles/[/A-Za-z0-9_.]+)\".+\r?$,http://napirajz.hu\1,p'`
   [ -n "$PICS" ] && echo >&2 "regex 1" && break
-  PICS=`cat tmp | sed -nr 's,^[ \t]+<img src=\"(http://napirajz.freeblog.hu/Files/[A-Za-z0-9_.]+)\".+\r?$,\1,p'`
+  PICS=`cat tmp | sed -nr 's,^[ \t<p>]*<img src=\"(http://napirajz.freeblog.hu/[fF]iles/[A-Za-z0-9_.]+)\".+\r?$,\1,p'`
   [ -n "$PICS" ] && echo >&2 "regex 2" && break
-  PICS=`cat tmp | sed -nr 's,^[ \t]+<img src=\"(http://napirajz.hu/files/[A-Za-z0-9_.]+)\".+\r?$,\1,p'`
+  PICS=`cat tmp | sed -nr 's,^[ \t<p>]*<img src=\"(http://napirajz.hu/[fF]iles/[A-Za-z0-9_.]+)\".+\r?$,\1,p'`
   [ -n "$PICS" ] && echo >&2 "regex 3" && break
                     echo >&2 "regex -" && exit 1
 done
