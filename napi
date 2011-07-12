@@ -1,28 +1,28 @@
 #!/bin/sh
-# Get archive URL in agr1, otherwise use main page. Generate filename.
-URL=$1
+# Get archive URL in arg1, otherwise generate main page. Generate filename.
+URL=$1 && echo 2>&1 "****************** napi debug message *******************"
 if [ -n "$URL" ]; then
   MONTH=`echo $URL | sed -r 's,^.+([0-9]{4})/([0-9]{2}).+$,\1_\2,'`
   FILE="${MONTH}.html"
-  [ -f $FILE ] && echo $FILE && exit 0
+  [ -f $FILE ] && echo 2>&1 "$FILE already exists." && echo $FILE && exit 0
 else
   URL="http://napirajz.hu/"
   FILE="index.html"
 fi
-echo "napi $URL $FILE" >&2
+echo >&2 "$FILE from $URL"
 
-# Set up wget options depending on system, no -nc option on OpenWRT
-uname -a | grep -i wrt >/dev/null || WGETOPT=-nc
-
-# Try to retrieve webpage, or exit to avoid deleting data, get picture URLs
+# Try to retrieve webpage, or exit to avoid deleting data
 curl -f ${URL} >tmp 2>/dev/null || exit 1 
+
+# Get picture URLs, try different patterns
 while true; do
-  PICS=`cat tmp | sed -nr 's,^.+<img src=\"(/files/[/A-Za-z0-9_.]+)\".+$,http://napirajz.hu\1,p'`
+  PICS=`cat tmp | sed -nr 's,^[ \t]+<img src=\"(/files/[/A-Za-z0-9_.]+)\".+\r?$,http://napirajz.hu\1,p'`
   [ -n "$PICS" ] && echo >&2 "regex 1" && break
-  PICS=`cat tmp | sed -nr 's,^.+<img src=\"(http://napirajz.freeblog.hu/Files/[A-Za-z0-9_.]+)\".+$,\1,p'`
+  PICS=`cat tmp | sed -nr 's,^[ \t]+<img src=\"(http://napirajz.freeblog.hu/Files/[A-Za-z0-9_.]+)\".+\r?$,\1,p'`
   [ -n "$PICS" ] && echo >&2 "regex 2" && break
-  PICS=`cat tmp | sed -nr 's,^.+<img src=\"(http://napirajz.hu/files/[A-Za-z0-9_.]+)\".+$,\1,p'`
-                    echo >&2 "regex 3" && break
+  PICS=`cat tmp | sed -nr 's,^[ \t]+<img src=\"(http://napirajz.hu/files/[A-Za-z0-9_.]+)\".+\r?$,\1,p'`
+  [ -n "$PICS" ] && echo >&2 "regex 3" && break
+                    echo >&2 "regex -" && exit 1
 done
 echo >&2 $PICS
 
@@ -33,6 +33,7 @@ cat > $FILE <<HEADER
 HEADER
 
 # Get pictures and print links to copies
+uname -a | grep -i wrt >/dev/null || WGETOPT=-nc
 for i in $PICS; do
   wget ${WGETOPT} "${i}"
   echo $i \
@@ -51,6 +52,6 @@ ny&uacute;jtotta inspir&aacute;ci&oacute;t&oacute;l.
 </body></html>
 FOOTER
 
-# Return value
+# Return value is generated filename
 echo $FILE
 
