@@ -1,4 +1,17 @@
 #!/bin/sh
+if [ "$1" = '-h' ]; then cat <<EOF
+Usage: ./napi [ <URL> | -h ]
+Without parameters, napi retrieves webpage http://napirajz.hu, downloads the
+comics to the working dir and creates index.html with links to them.
+When called with an archive URL, like http://napirajz/hu/archives/2006/01/,
+napi does the same for the that, creating webpage 2006_01.html.
+In case of an archive URL an existing file is not overwritten.
+In both cases the name of the created filename is printed to stdout.
+ATTENTION developer: do not print anything else to stdout!!!
+EOF
+exit 0
+fi
+
 # Get archive URL in arg1, otherwise generate main page. Generate filename.
 URL=$1 && echo >&2 "****************** napi debug message *******************"
 if [ -n "$URL" ]; then

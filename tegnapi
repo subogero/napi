@@ -1,6 +1,13 @@
 #!/bin/sh
-FILE=tegnapi.html
+if [ "$1" = '-h' ]; then cat <<EOF
+tegnapi retrieves webpage http://napirajz.hu/archives/, extracts links to
+monthly archive pages, and creates mirrors for them using script ./napi.
+Also creates tegnapi.html with links to the monthly mirrirs.
+EOF
+exit 0
+fi
 
+FILE=tegnapi.html
 # Try to get archives, or exit to avoid deleting data, get monthly URLs
 curl -f "http://napirajz.hu/archives/" >tmp || exit 1 
 PAGES=`cat tmp \
