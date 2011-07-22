@@ -17,6 +17,7 @@ PAGES=`cat tmp \
 cat > $FILE <<HEADER
 <html><head><title>subogero tegnapi</title></head>
 <body><hr><h1 align="center">subogero tegnapi</h1><hr>
+<a href="keres.pl">keres</a><p>
 HEADER
 
 # Create page for each month
