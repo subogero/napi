@@ -9,7 +9,8 @@ Content-type: text/html
 <a href="keres.pl">keres</a>
 <hr><h3 align="center">keress a napiban</h3><hr>
 <form method="POST" action="keres.pl">
-<input type="text" name="rajz"/> Keres&eacute;s rajz filen&eacute;vre
+<input type="text" name="rajz"/>
+Keres&eacute;s rajz nev&eacute;re. <small>Tipp: &uuml;res minta!</small>
 </form>
 HEADER
 
@@ -19,13 +20,14 @@ HEADER
 # Read and sanitize POSTed query from stdin
 # Try to find pattern among jpg filenames in dir, print links to them
 $query .= $_ while (<>);
-if ($query =~ /^rajz=(\w{1,40}).*$/) {
+if ($query =~ /^rajz=(\w{0,40}).*$/) {
     my $pattern = $1;
     open LS, "ls -1 $PWD |" or die "$!";
     while (<LS>) {
+        s/[\r\n]//g;
         if (/^(\w*$pattern\w*)\.jpe?g/i) {
             print "<a href=\"$_\">$1</a> ";
-            open GREP, "grep -i $1 $PWD/2*html |" or die "$!";
+            open GREP, "grep -i \\\"$_ $PWD/2*html |" or die "$!";
             while(<GREP>) {
                 /^.+\/(\w+)(\.html):.+$/;
                 print "<a href=\"$1$2\"><small><small>$1</small></small></a> ";
