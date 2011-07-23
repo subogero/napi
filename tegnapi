@@ -39,6 +39,7 @@ cat >> $FILE <<FOOTER
 akiket a c&eacute;ges internet proxy megfosztott a napi rajz
 ny&uacute;jtotta inspir&aacute;ci&oacute;t&oacute;l.
 <hr>Friss&iacute;tve: `date "+%Y.%m.%d - %H:%M"`
+<br><small><a href="http://github.com/subogero">github.com/subogero</a></small>
 </body></html>
 FOOTER
 

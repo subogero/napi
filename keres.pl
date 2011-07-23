@@ -1,6 +1,6 @@
 #!/usr/bin/perl
 # Header and query form
-print <<EOF;
+print <<HEADER;
 Content-type: text/html
 
 <head><title>keress a napiban</title></head><body>
@@ -11,7 +11,7 @@ Content-type: text/html
 <form method="POST" action="keres.pl">
 <input type="text" name="rajz"/> Keres&eacute;s rajz filen&eacute;vre
 </form>
-EOF
+HEADER
 
 # Find working directory (uhttpd runs this in docroot)
 ($PWD = $0) =~ s/^(.+)keres\.pl$/$1/;
@@ -30,4 +30,7 @@ if ($query =~ /^rajz=(\w{1,40}).*$/) {
 }
 
 # Footer
-print "</body></html>";
+print <<FOOTER;
+<br><small><a href="http://github.com/subogero">github.com/subogero</a></small>
+</body></html>
+FOOTER
