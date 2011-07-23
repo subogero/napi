@@ -41,8 +41,11 @@ echo >&2 $PICS
 
 # Print page header
 cat > $FILE <<HEADER
-<html><head><title>subogero napi $MONTH </title></head>
-<body><hr><h1 align="center">subogero napi $MONTH </h1><hr>
+<html><head><title>subogero napi $MONTH </title></head><body>
+<a href="index.html">napi</a>
+<a href="tegnapi.html">tegnapi</a>
+<a href="keres.pl">keres</a>
+<hr><h3 align="center">subogero napi $MONTH </h3><hr>
 HEADER
 
 # Get pictures and print links to copies
