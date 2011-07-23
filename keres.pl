@@ -17,14 +17,20 @@ HEADER
 ($PWD = $0) =~ s/^(.+)keres\.pl$/$1/;
 
 # Read and sanitize POSTed query from stdin
-# Try to find pattern among jpg filenames in dir, print link to them
+# Try to find pattern among jpg filenames in dir, print links to them
 $query .= $_ while (<>);
 if ($query =~ /^rajz=(\w{1,40}).*$/) {
     my $pattern = $1;
     open LS, "ls -1 $PWD |" or die "$!";
     while (<LS>) {
         if (/^(\w*$pattern\w*)\.jpe?g/i) {
-            print "<a href=\"$_\">$1</a><br>";
+            print "<a href=\"$_\">$1</a> ";
+            open GREP, "grep -i $1 2*html |" or die "$!";
+            while(<GREP>) {
+                /^(\w+)(\.html):.+$/;
+                print "<a href=\"$1$2\"><small><small>$1</small></small></a> ";
+            }
+            print "<br>";
         }
     }
 }
