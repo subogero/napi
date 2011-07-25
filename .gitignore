@@ -1,4 +1,7 @@
-index.html
+*.html
 *.jpg
 *.jpeg
-index.html~
+*.JPG
+log
+tmp
+
