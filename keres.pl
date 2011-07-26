@@ -3,7 +3,7 @@
 print <<HEADER;
 Content-type: text/html
 
-<head><title>keress a napiban</title></head><body>
+<html><head><title>keress a napiban</title></head><body>
 <a href="index.html">napi</a>
 <a href="tegnapi.html">tegnapi</a>
 <a href="keres.pl">keres</a>
