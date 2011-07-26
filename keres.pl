@@ -19,8 +19,8 @@ HEADER
 
 # Read and sanitize POSTed query from stdin
 # Try to find pattern among jpg filenames in dir, print links to them
-$query .= $_ while (<>);
-if ($query =~ /^rajz=(\w{0,40}).*$/) {
+$query = <>;
+if ($query =~ /^rajz=(\w{0,40})$/) {
     my $pattern = $1;
     open LS, "ls -1 $PWD |" or die "$!";
     while (<LS>) {
