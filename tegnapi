@@ -14,11 +14,12 @@ PAGES=`cat tmp \
 | sed -nr 's,^.+<li><a href=\"(http://napirajz.hu/archives/[0-9]{4}/[0-9]{2}/)\".+$,\1,p'`
 
 # Print page header
+which perl >/dev/null && EXTENSION=pl || EXTENSION=cgi
 cat > $FILE <<HEADER
 <html><head><title>subogero tegnapi</title></head><body>
 <a href="index.html">napi</a>
 <a href="tegnapi.html">tegnapi</a>
-<a href="keres.pl">keres</a>
+<a href="keres.${EXTENSION}">keres</a>
 <hr><h3 align="center">subogero tegnapi</h3><hr>
 HEADER
 

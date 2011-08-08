@@ -1,17 +1,20 @@
 Mirroring website for http://napirajz.hu
+Powering http://subogero.dyndns.org/git/napi/
 
 The famous Hungarian comic series is filtered out by many corporate proxies,
 thus depriving fans of vital inspiration.
 
 To overcome this, the site needs to be mirrored.
-This mirroring engine creates 3 main pages:
+This mirror contains 3 main pages:
 - index.html  : the last 20 comics
 - tegnapi.html: archives grouped my months
-- keres.pl    : search in comics by filename
+- keres.pl|cgi: search in comics by filename
 
-Make sure to call the following scripts regularly from cron:
+Call the following scripts regularly from cron to update the site:
 - napi   : regularly
 - tegnapi: end of each month
 
-This site was designed to be small, running on OpenWRT routers as well,
-provided Perl is installed. You might need an external HDD for this.
+This site was designed to be small, running on OpenWRT routers as well.
+If perl is installed, keres.pl is used for search,
+otherwise it's the keres.cgi shell script.
+The latter is bloody slow.
