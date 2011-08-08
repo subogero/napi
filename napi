@@ -43,7 +43,7 @@ echo >&2 $PICS
 VIDS=`cat tmp | sed -nr 's,^.*(<iframe.+youtube.+iframe>).*$,\1<br>,p'`
 
 # Print page header
-which perl && EXTENSION=pl || EXTENSION=cgi
+which perl >/dev/null && EXTENSION=pl || EXTENSION=cgi
 cat > $FILE <<HEADER
 <html><head><title>subogero napi $MONTH </title></head><body>
 <a href="index.html">napi</a>
