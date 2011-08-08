@@ -16,18 +16,20 @@ HEADER
 
 # Find working directory (uhttpd runs this in docroot)
 PWD=`echo $0 | sed -r 's/^(\.\/)?(.*)keres.cgi$/\2/'`
-echo DEBUG PRG $0 '<br>' DEBUG PWD $PWD '<br>'
+
 # Read and sanitize POSTed query from stdin
 # Try to find pattern among jpg filenames in dir, print links to them
-pattern=`sed -rn 's/^rajz=([A-Za-z0-9_]{0,40})/\1/p'`
-echo DEBUG PTR $pattern '<br>'
-for line in `ls -1 $PWD`; do
-  comic=`echo $line | sed -rn "s/^[a-z0-9_]*${pattern}[a-z0-9_]*\.jpe?g$/&/pi"`
-  echo -n "<a href=\"${comic}\">${comic}</a> "
-  grep -li $comic ${PWD}2*html \
-  | sed -r 's:^([a-z0-9_/]*/)?([^/]+)$:<small><small><a href="\2">\2</a></small></small>:'
-  [ -n "$comic" ] && echo '<br>'
-done
+read input
+if [ -n "$input" ]; then
+  pattern=`echo $input | sed -rn 's/^rajz=([A-Za-z0-9_]{0,40})/\1/p'`
+  for line in `ls -1 $PWD`; do
+    comic=`echo $line | grep -iE ${pattern}'[a-z0-9_]*\.jpe?g'`
+    echo "<a href=\"${comic}\">${comic}</a> "
+    grep -li $comic ${PWD}2*html \
+    | sed -r 's:^([a-z0-9_/]*/)?([^/]+)$:<small><small><a href="\2">\2</a></small></small>:'
+    [ -n "$comic" ] && echo '<br>'
+  done
+fi
 
 # Footer
 cat <<FOOTER
