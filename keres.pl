@@ -6,6 +6,7 @@ Content-type: text/html
 <html><head><title>keress a napiban</title></head><body>
 <a href="index.html">napi</a>
 <a href="tegnapi.html">tegnapi</a>
+<a href="komedia.html">kom&eacute;dia</a>
 <a href="keres.pl">keres</a>
 <hr><h3 align="center">keress a napiban</h3><hr>
 <form method="POST" action="keres.pl">
