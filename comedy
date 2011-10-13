@@ -1,0 +1,2 @@
+#!/bin/sh
+curl 2>/dev/null `curl www.comedycentral.hu/photos 2>/dev/null | sed -rn 's:^.*<a href=.(.+flipbook=napirajz-comedy).*thumblink.*$:www.comedycentral.hu/\1:p'` | grep 'jpg.*Grafitember'
