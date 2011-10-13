@@ -28,7 +28,7 @@ if ($query =~ /^rajz=(\w{0,40})$/) {
         s/[\r\n]//g;
         if (/^(\w*$pattern\w*)\.jpe?g/i) {
             print "<a href=\"$_\">$1</a> ";
-            open GREP, "grep -i \\\"$_ $PWD/2*html |" or die "$!";
+            open GREP, "grep -i \\\"$_ $PWD/[k2]*html |" or die "$!";
             while(<GREP>) {
                 /^.+\/(\w+)(\.html):.+$/;
                 print "<a href=\"$1$2\"><small><small>$1</small></small></a> ";

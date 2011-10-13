@@ -26,7 +26,7 @@ if [ -n "$input" ]; then
   for line in `ls -1 $PWD`; do
     comic=`echo $line | grep -iE ${pattern}'[a-z0-9_]*\.jpe?g'`
     echo "<a href=\"${comic}\">${comic}</a> "
-    grep -li $comic ${PWD}2*html \
+    grep -li $comic ${PWD}[k2]*html \
     | sed -r 's:^([a-z0-9_/]*/)?([^/]+)$:<small><small><a href="\2">\2</a></small></small>:'
     [ -n "$comic" ] && echo '<br>'
   done
