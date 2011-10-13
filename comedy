@@ -1,0 +1,52 @@
+#!/bin/sh
+if [ "$1" = '-h' ]; then cat <<EOF
+Usage: ./comedy [ -h ]
+Script comedy retrieves Grafitember comics from www.comedycentral.hu,
+downloads the comics and creates comedy.html with links to them.
+ATTENTION developer: do not print anything else to stdout!!!
+EOF
+exit 0
+fi
+
+# Get picture URLs
+URL="www.comedycentral.hu/photos"
+FILE="komedia.html"
+PICS=`curl $URL 2>/dev/null \
+| sed -rn 's:^.*<a href=.(.+flipbook=napirajz-comedy).*thumblink.*$:www.comedycentral.hu/\1:p' \
+| xargs curl 2>/dev/null \
+| sed -rn 's:^.+src=.(.+)\?width=70.+Grafitember.+$:\1:p'`
+
+# Print page header
+which perl >/dev/null && EXTENSION=pl || EXTENSION=cgi
+cat > $FILE <<HEADER
+<html><head><title>subogero kom&eacute;dia</title></head><body>
+<a href="index.html">napi</a>
+<a href="tegnapi.html">tegnapi</a>
+<a href="komedia.html">kom&eacute;dia</a>
+<a href="keres.${EXTENSION}">keres</a>
+<hr><h3 align="center">subogero kom&eacute;dia</h3><hr>
+HEADER
+
+# Get pictures and print links to copies
+uname -a | grep -i wrt >/dev/null || WGETOPT=-nc
+for i in $PICS; do
+  wget ${WGETOPT} "${i}"
+  echo $i \
+  | sed -r 's,^.+/([-A-Za-z0-9_]+)(\.[jpegJPG]+)$,<a href=\"\1\2\">\1</a><br>,' \
+  >> $FILE
+done
+
+# Print page footer
+cat >> $FILE <<FOOTER
+<hr> (c) CC - Mer&eacute;nyi D&aacute;niel
+<br>Eredeti: h t t p : / / w w w . c o m e d y c e n t r a l . h u
+<p>Ez az oldal azok sz&aacute;m&aacute;ra k&eacute;sz&uuml;lt,
+akiket a c&eacute;ges internet proxy megfosztott a napi rajz
+ny&uacute;jtotta inspir&aacute;ci&oacute;t&oacute;l.
+<hr>Friss&iacute;tve: `date "+%Y.%m.%d - %H:%M"`
+<br><small><a href="http://github.com/subogero">github.com/subogero</a></small>
+</body></html>
+FOOTER
+
+# Return value is generated filename
+echo $FILE

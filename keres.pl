@@ -6,6 +6,7 @@ Content-type: text/html
 <html><head><title>keress a napiban</title></head><body>
 <a href="index.html">napi</a>
 <a href="tegnapi.html">tegnapi</a>
+<a href="komedia.html">kom&eacute;dia</a>
 <a href="keres.pl">keres</a>
 <hr><h3 align="center">keress a napiban</h3><hr>
 <form method="POST" action="keres.pl">
@@ -27,7 +28,7 @@ if ($query =~ /^rajz=(\w{0,40})$/) {
         s/[\r\n]//g;
         if (/^(\w*$pattern\w*)\.jpe?g/i) {
             print "<a href=\"$_\">$1</a> ";
-            open GREP, "grep -i \\\"$_ $PWD/2*html |" or die "$!";
+            open GREP, "grep -i \\\"$_ $PWD/[k2]*html |" or die "$!";
             while(<GREP>) {
                 /^.+\/(\w+)(\.html):.+$/;
                 print "<a href=\"$1$2\"><small><small>$1</small></small></a> ";

@@ -4,7 +4,7 @@ Usage: ./napi [ <URL> | -h ]
 Without parameters, napi retrieves webpage http://napirajz.hu, downloads the
 comics to the working dir and creates index.html with links to them.
 When called with an archive URL, like http://napirajz/hu/archives/2006/01/,
-napi does the same for the that, creating webpage 2006_01.html.
+napi does the same for that, creating webpage 2006_01.html.
 In case of an archive URL an existing file is not overwritten.
 In both cases the name of the created filename is printed to stdout.
 ATTENTION developer: do not print anything else to stdout!!!
@@ -48,6 +48,7 @@ cat > $FILE <<HEADER
 <html><head><title>subogero napi $MONTH </title></head><body>
 <a href="index.html">napi</a>
 <a href="tegnapi.html">tegnapi</a>
+<a href="komedia.html">kom&eacute;dia</a>
 <a href="keres.${EXTENSION}">keres</a>
 <hr><h3 align="center">subogero napi $MONTH </h3><hr>
 HEADER
@@ -57,7 +58,7 @@ uname -a | grep -i wrt >/dev/null || WGETOPT=-nc
 for i in $PICS; do
   wget ${WGETOPT} "${i}"
   echo $i \
-  | sed -r 's,^.+/([A-Za-z0-9_]+)(\.[jpegJPG]+)$,<a href=\"\1\2\">\1</a><br>,' \
+  | sed -r 's,^.+/([-A-Za-z0-9_]+)(\.[jpegJPG]+)$,<a href=\"\1\2\">\1</a><br>,' \
   >> $FILE
 done
 
