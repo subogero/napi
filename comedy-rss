@@ -24,17 +24,48 @@ Options:
 EOF
      exit 0
      ;;
-    \?)
-      echo "Invalid option: -$OPTARG" >&2
+   \?)
+      echo "Invalid option: -$OPTARG" > /dev/null
       exit 1
       ;;
-    :)
-      echo "Option -$OPTARG requires an argument." >&2
+   :) 
+      echo "Option -$OPTARG requires an argument." > /dev/null
       exit 1
       ;;
   esac
 done
 
 FILE=`echo ${INPUT_HTML%.*}.rss`
+
+cat > $FILE << HEADER
+<?xml version="1.0"?>
+<rss version="2.0">
+<channel>
+<title>comedy</title>
+<link>$BASE_URL</link>
+<description>Napirajz @ comedy central</description>
+<language>hu</language>
+HEADER
+
+for PIC in `cat $INPUT_HTML | sed -rn 's/<a href="([^"]+.jpg)">[^<]+<\/a>.*/\1/pg'`
+do
+  LMD=$(stat -c %y $PIC)
+  DESC=`echo ${PIC%.*}`
+  cat >> $FILE << ITEM
+<item>
+<title>$DESC</title>
+<link>$BASE_URL</link>
+<description>src="$BASE_URL/$PIC"</description>
+<pubDate>$LMD</pubDate>
+</item>
+ITEM
+done
+
+
+
+cat >> $FILE << FOOTER
+</channel>
+</rss> 
+FOOTER
 
 echo $FILE
