@@ -47,9 +47,11 @@ cat > $FILE << HEADER
 <language>hu</language>
 HEADER
 
-for PIC in `cat $INPUT_HTML | sed -rn 's/<a href="([^"]+.jpg)">[^<]+<\/a>.*/\1/pg'`
-do
-  LMD=$(stat -c %y $PIC)
+PICS=`cat $INPUT_HTML | sed -rn 's/<a href="([^"]+.jpg)">[^<]+<\/a>.*/\1/pg'`
+PICS=`ls -rt $PICS`
+ 
+for PIC in $PICS; do 
+  LMD=$(ls -gG --full-time $PIC | sed -r 's/[^ ]+ [0-9]+ [0-9]+ ([0-9\.-]+ [0-9:\.]+ [0-9+]+).+/\1/')
   DESC=`echo ${PIC%.*}`
   cat >> $FILE << ITEM
 <item>
