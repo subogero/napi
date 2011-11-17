@@ -2,12 +2,12 @@
 
 if [ "$1" = "-h" ]; then
 cat <<EOF
-Usage: ./comedy-rss [-h] -b <dir-url> -i <input-html>
+Usage: ./comedy-rss [-h] -d <dir-url> -i <input-html>
 
 Options:
   -h              print this help and exit
-  -b <dir-url>    url of the working directory
-                  $BASE_URL environment variable can be used instead
+  -d <dir-url>    url of the working directory
+                  $DIR_URL environment variable can be used instead
   -i <input-html> input file to parse
                   $INPUT_HTML environment variable can be used instead
 
@@ -19,9 +19,9 @@ exit 0
 fi
 
 while [ -n "$*" ]; do
-  if [ "$1" = "-b" ]; then
+  if [ "$1" = "-d" ]; then
     shift
-    BASE_URL=$1
+    DIR_URL=$1
     shift
   fi
   if [ "$1" = "-i" ]; then
@@ -36,7 +36,7 @@ while [ -n "$*" ]; do
   fi
 done
 
-if [ -z "$BASE_URL" ]; then
+if [ -z "$DIR_URL" ]; then
   exit 1
 fi
 if [ -z "$INPUT_HTML" ]; then
@@ -50,7 +50,7 @@ cat > $FILE << HEADER
 <rss version="2.0">
 <channel>
 <title>comedy</title>
-<link>$BASE_URL</link>
+<link>$DIR_URL</link>
 <description>Napirajz @ comedy central</description>
 <language>hu</language>
 HEADER
@@ -64,8 +64,8 @@ for PIC in $PICS; do
   cat >> $FILE << ITEM
 <item>
 <title>$DESC</title>
-<link>$BASE_URL</link>
-<description>src="$BASE_URL/$PIC"</description>
+<link>$DIR_URL</link>
+<description>src="$DIR_URL/$PIC"</description>
 <pubDate>$LMD</pubDate>
 </item>
 ITEM
