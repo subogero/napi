@@ -35,6 +35,13 @@ EOF
   esac 
 done
 
+if [ -z "$BASE_URL" ]; then
+  exit 1
+fi
+if [ -z "$INPUT_HTML" ]; then
+  exit 1
+fi
+
 FILE=`echo ${INPUT_HTML%.*}.rss`
 
 cat > $FILE << HEADER
