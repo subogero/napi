@@ -1,15 +1,21 @@
 #!/bin/sh
 
-while getopts "hb:i:" opt; do
-  case $opt in
-    b)
-      BASE_URL=$OPTARG
-      ;;
-    i)
-      INPUT_HTML=$OPTARG
-      ;;
-    h)
-     cat <<EOF
+for WORD in "$@"; do
+  case $WORD in
+    -*)  true ;
+      case $WORD in
+        -b)
+          shift
+          BASE_URL=$1
+          shift
+          ;;
+        -i)
+          shift
+          INPUT_HTML=$1
+          shift
+          ;;
+        -h)
+          cat <<EOF
 Usage: ./comedy-rss -b http://base/url/of/your/directory -i parse_this.html [-h]
 
 Create rss file from the jpg link of the input html file. The jpeg files are handled as local files.
@@ -22,17 +28,11 @@ Options:
   i  input html file
      $INPUT_HTML environment variable can be used instead of it
 EOF
-     exit 0
-     ;;
-   \?)
-      echo "Invalid option: -$OPTARG" > /dev/null
-      exit 1
+          exit 0
+          ;;
+      esac
       ;;
-   :) 
-      echo "Option -$OPTARG requires an argument." > /dev/null
-      exit 1
-      ;;
-  esac
+  esac 
 done
 
 FILE=`echo ${INPUT_HTML%.*}.rss`
