@@ -62,12 +62,12 @@ for PIC in $PICS; do
   LMD=`ls -le $PIC \
   | sed -r 's/^[-a-z]+ +[0-9]+ +[a-z0-9]+ +[a-z0-9]+ +[0-9]+ +(.+) +[^ ]+$/\1/' \
   | sed -r 's/^(.+) (.+) (.+) (.+) (.+)$/\1, \3 \2 \5 \4 +0100/'`
-  DESC=`echo ${PIC%.*}`
+  DESC=${PIC%.*}
   cat >> $FILE << ITEM
 <item>
 <title>$DESC</title>
 <link>$DIR_URL</link>
-<description>src="$DIR_URL/$PIC"</description>
+<description>&lt;img src="$DIR_URL/$PIC"/&gt;</description>
 <pubDate>$LMD</pubDate>
 </item>
 ITEM
