@@ -67,7 +67,7 @@ for PIC in $PICS; do
 <item>
 <title>$DESC</title>
 <link>$DIR_URL</link>
-<description>src="$DIR_URL/$PIC"</description>
+<description>&lt;img src="$DIR_URL/$PIC"/&gt;</description>
 <pubDate>$LMD</pubDate>
 </item>
 ITEM
