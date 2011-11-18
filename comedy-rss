@@ -59,8 +59,9 @@ PICS=`cat $INPUT_HTML | sed -rn 's/<a href="([^"]+.jpg)">[^<]+<\/a>.*/\1/pg'`
 PICS=`ls -rt $PICS`
  
 for PIC in $PICS; do 
-  LMD=`ls -l 20_dofj.jpg | sed -r 's/[-rwx]+ [0-9]+ [a-zA-Z0-9]+ [a-zA-Z0-9]+ [0-9]+ ([0-9-]+ [0-9:]+).+/\1/'`
-  LMD=`date -d "$LMD" -R`
+  LMD=`ls -le $PIC \
+  | sed -r 's/^[-a-z]+ +[0-9]+ +[a-z0-9]+ +[a-z0-9]+ +[0-9]+ +(.+) +[^ ]+$/\1/' \
+  | sed -r 's/^(.+) (.+) (.+) (.+) (.+)$/\1, \3 \2 \5 \4 +0100/'`
   DESC=`echo ${PIC%.*}`
   cat >> $FILE << ITEM
 <item>
