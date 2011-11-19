@@ -66,7 +66,7 @@ for PIC in $PICS; do
   cat >> $FILE << ITEM
 <item>
 <title>$DESC</title>
-<link>$DIR_URL</link>
+<link>$DIR_URL/$PIC</link>
 <description>&lt;img src="$DIR_URL/$PIC"/&gt;</description>
 <pubDate>$LMD</pubDate>
 </item>
