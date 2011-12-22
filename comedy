@@ -9,11 +9,9 @@ exit 0
 fi
 
 # Get picture URLs
-URL="www.comedycentral.hu/photos"
+URL="http://www.comedycentral.hu/photos/01_csigolyaid/?flipbook=napirajz-comedy"
 FILE="komedia.html"
 PICS=`curl $URL 2>/dev/null \
-| sed -rn 's:^.*<a href=.(.+flipbook=napirajz-comedy).*thumblink.*$:www.comedycentral.hu/\1:p' \
-| xargs curl 2>/dev/null \
 | sed -rn 's:^.+src=.(.+)\?width=70.+Grafitember.+$:\1:p'`
 
 # Print page header
