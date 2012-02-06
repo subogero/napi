@@ -12,7 +12,7 @@ fi
 URL="http://www.comedycentral.hu/photos/01_csigolyaid/?flipbook=napirajz-comedy"
 FILE="komedia.html"
 PICS=`curl $URL 2>/dev/null \
-| sed -rn 's:^.+src=.(.+)\?width=70.+Grafitember.+$:\1:p'`
+| sed -rn 's:^.+src=.(.+)\?(width=70|height=53).+Grafitember.+$:\1:p'`
 
 # Print page header
 which perl >/dev/null && EXTENSION=pl || EXTENSION=cgi
