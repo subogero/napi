@@ -9,7 +9,8 @@ exit 0
 fi
 
 # Get picture URLs
-URL="http://www.comedycentral.hu/photos/01_csigolyaid/?flipbook=napirajz-comedy"
+URL="http://www.comedycentral.hu/photos/007_cruton/?flipbook=napirajz-comedy-2012-1 \
+     http://www.comedycentral.hu/photos/01_csigolyaid/?flipbook=napirajz-comedy"
 FILE="komedia.html"
 PICS=`curl $URL 2>/dev/null \
 | sed -rn 's:^.+src=.(.+)\?(width=70|height=53).+Grafitember.+$:\1:p'`
@@ -30,14 +31,15 @@ uname -a | grep -i wrt >/dev/null || WGETOPT=-nc
 for i in $PICS; do
   wget ${WGETOPT} "${i}"
   echo $i \
-  | sed -r 's,^.+/([-A-Za-z0-9_]+)(\.[jpegJPG]+)$,<a href=\"\1\2\">\1</a><br>,' \
-  >> $FILE
-done
+  | sed -r 's,^.+/([-A-Za-z0-9_]+)(\.[jpegJPG]+)$,<a href=\"\1\2\">\1</a><br>,'
+done >> $FILE
 
 # Print page footer
 cat >> $FILE <<FOOTER
 <hr> (c) CC - Mer&eacute;nyi D&aacute;niel
 <br>Eredeti: h t t p : / / w w w . c o m e d y c e n t r a l . h u
+<br>Akiknek a nev&eacute;ben &eacute;n k&eacute;rek eln&eacute;z&eacute;st,
+hogy a rajzok sorrendje ennyire kaotikus.
 <p>Ez az oldal azok sz&aacute;m&aacute;ra k&eacute;sz&uuml;lt,
 akiket a c&eacute;ges internet proxy megfosztott a napi rajz
 ny&uacute;jtotta inspir&aacute;ci&oacute;t&oacute;l.
