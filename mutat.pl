@@ -7,7 +7,7 @@ Content-type: text/html
 <a href="index.html">napi</a>
 <a href="tegnapi.html">tegnapi</a>
 <a href="komedia.html">kom&eacute;dia</a>
-<a href="keres.pl">keres</a><hr>
+<a href="keres.pl">keres</a>
 HEADER
 
 # Find working directory (uhttpd runs this in docroot)
@@ -15,12 +15,12 @@ HEADER
 
 # Read picture name from QUERY_STRING env var (GET method)
 my $query = $ENV{QUERY_STRING};
-if ($query =~ /^rajz=([\w.]{5,40})$/) {
-    my $filename = $1;
+if ($query =~ /^rajz=(([\w]{5,40})\.jpe?g)$/) {
+    my ($filename, $basename) = ($1, $2);
     if (-f "$PWD$filename") {
-        print "<img src=\"$filename\" alt=\"$filename\"/>\n";
+        print "$basename<hr><img src=\"$filename\" alt=\"$filename\"/>\n";
     } else {
-        print "Itt bizony nincs $filename.\n";
+        print "<hr>Itt bizony nincs $filename.\n";
     }
 }
 
