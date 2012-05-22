@@ -24,17 +24,16 @@ $query = <>;
 if ($query =~ /^rajz=(\w{0,40})$/) {
     my $pattern = $1;
     opendir LS, $PWD or die "$!";
-    while (readdir LS) {
+    foreach (readdir LS) {
         s/\r|\n//g;
-        if (/^(\w*$pattern\w*)\.jpe?g/i) {
-            print "<a href=\"mutat.pl?rajz=$_\">$1</a> ";
-            open GREP, "grep -i \\\"$_ $PWD/[k2]*html |" or die "$!";
-            while(<GREP>) {
-                /^.+\/(\w+)(\.html):.+$/;
-                print "<a href=\"$1$2\"><small><small>$1</small></small></a> ";
-            }
-            print "<br>";
+        next unless (/^(\w*$pattern\w*)\.jpe?g/i);
+        print "<a href=\"mutat.pl?rajz=$_\">$1</a> ";
+        open GREP, "grep -i \\\"mutat.pl\?rajz=$_ $PWD/[ki2]*html |" or die "$!";
+        while (<GREP>) {
+            /^.+\/(\w+)(\.html):.+$/;
+            print "<a href=\"$1$2\"><small><small>$1</small></small></a> ";
         }
+        print "<br>";
     }
     closedir LS;
 }
