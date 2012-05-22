@@ -25,7 +25,7 @@ if [ -n "$input" ]; then
   pattern=`echo $input | sed -rn 's/^rajz=([A-Za-z0-9_]{0,40})/\1/p'`
   for line in `ls -1 $PWD`; do
     comic=`echo $line | grep -iE ${pattern}'[a-z0-9_]*\.jpe?g'`
-    echo "<a href=\"${comic}\">${comic}</a> "
+    echo "<a href=\"mutat.pl?rajz=${comic}\">${comic}</a> "
     grep -li $comic ${PWD}[k2]*html \
     | sed -r 's:^([a-z0-9_/]*/)?([^/]+)$:<small><small><a href="\2">\2</a></small></small>:'
     [ -n "$comic" ] && echo '<br>'

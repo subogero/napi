@@ -55,7 +55,7 @@ cat > $FILE << HEADER
 <language>hu</language>
 HEADER
 
-PICS=`cat $INPUT_HTML | sed -rn 's/<a href="([^"]+.jpg)">[^<]+<\/a>.*/\1/pg'`
+PICS=`sed -rn 's/<a href="mutat.pl\?rajz=([^"]+.jpe?g)">[^<]+<\/a>.*/\1/ipg' $INPUT_HTML`
 PICS=`ls -rt $PICS`
  
 for PIC in $PICS; do 

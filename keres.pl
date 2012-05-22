@@ -23,11 +23,11 @@ HEADER
 $query = <>;
 if ($query =~ /^rajz=(\w{0,40})$/) {
     my $pattern = $1;
-    open LS, "ls -1 $PWD |" or die "$!";
-    while (<LS>) {
-        s/[\r\n]//g;
+    opendir LS, $PWD or die "$!";
+    while (readdir LS) {
+        s/\r|\n//g;
         if (/^(\w*$pattern\w*)\.jpe?g/i) {
-            print "<a href=\"$_\">$1</a> ";
+            print "<a href=\"mutat.pl?rajz=$_\">$1</a> ";
             open GREP, "grep -i \\\"$_ $PWD/[k2]*html |" or die "$!";
             while(<GREP>) {
                 /^.+\/(\w+)(\.html):.+$/;
@@ -36,6 +36,7 @@ if ($query =~ /^rajz=(\w{0,40})$/) {
             print "<br>";
         }
     }
+    closedir LS;
 }
 
 # Footer

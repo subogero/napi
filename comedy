@@ -31,7 +31,7 @@ uname -a | grep -i wrt >/dev/null || WGETOPT=-nc
 for i in $PICS; do
   wget ${WGETOPT} "${i}"
   echo $i \
-  | sed -r 's,^.+/([-A-Za-z0-9_]+)(\.[jpegJPG]+)$,<a href=\"\1\2\">\1</a><br>,'
+  | sed -r 's,^.+/([-A-Za-z0-9_]+)(\.[jpegJPG]+)$,<a href=\"mutat.pl?rajz=\1\2\">\1</a><br>,'
 done >> $FILE
 
 # Print page footer
