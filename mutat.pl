@@ -7,7 +7,8 @@ my $query = $ENV{QUERY_STRING};
 if ($query =~ /^rajz=(([\w]{5,40})\.jpe?g)$/) {
     ($filename, $basename) = ($1, $2);
     if (-f "$PWD$filename") {
-        $stuff = "$basename<hr><img src=\"$filename\" alt=\"$filename\"/>\n";
+        $stuff  = "<a href=\"$filename\">$basename</a>";
+        $stuff .= "<hr><img src=\"$filename\" alt=\"$filename\"/>\n";
     } else {
         $stuff = "<hr>404 - Itt nincs semmilyen $filename.\n";
     }
