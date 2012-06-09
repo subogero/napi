@@ -28,12 +28,12 @@ cat > $FILE <<HEADER
 <a href="index.html">napi</a>
 <a href="tegnapi.html">tegnapi</a>
 <a href="komedia.html">kom&eacute;dia</a>
+<a href="aindex.html">aindex</a>
 <a href="keres.${EXTENSION}">keres</a>
 <hr><h3 align="center">subogero aindex</h3><hr>
 HEADER
 
 # Get pictures and print links to copies
-#<span class="imageholder clearafter"><img id="kep_3007082" src="http://kep.index.hu/1/0/300/3007/30070/3007082_2c32803c92b928dc68b4ccbb1e43b34a_wm.jpg" alt="Első meccs" width="597" height="1733" border="0" /></span>    </div>
 uname -a | grep -i wrt >/dev/null || WGETOPT=-nc
 while read i; do
   URL=`echo $i | sed -rn 's/^.+src="(.+)" alt=.+$/\1/p'`

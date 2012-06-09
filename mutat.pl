@@ -33,6 +33,7 @@ Content-type: text/html
 <a href="index.html">napi</a>
 <a href="tegnapi.html">tegnapi</a>
 <a href="komedia.html">kom&eacute;dia</a>
+<a href="aindex.html">aindex</a>
 <a href="keres.pl">keres</a>
 HEADER
 

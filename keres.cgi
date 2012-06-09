@@ -8,6 +8,7 @@ Content-type: text/html
 <a href="tegnapi.html">tegnapi</a>
 <a href="komedia.html">kom&eacute;dia</a>
 <a href="keres.cgi">keres</a>
+<a href="aindex.html">aindex</a>
 <hr><h3 align="center">keress a napiban</h3><hr>
 <form method="POST" action="keres.cgi">
 <input type="text" name="rajz"/>
