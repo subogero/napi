@@ -22,6 +22,7 @@ cat > $FILE <<HEADER
 <a href="index.html">napi</a>
 <a href="tegnapi.html">tegnapi</a>
 <a href="komedia.html">kom&eacute;dia</a>
+<a href="aindex.html">aindex</a>
 <a href="keres.${EXTENSION}">keres</a>
 <hr><h3 align="center">subogero kom&eacute;dia</h3><hr>
 HEADER
