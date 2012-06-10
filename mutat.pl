@@ -1,16 +1,12 @@
 #!/usr/bin/perl
 # Find working directory (uhttpd runs this in docroot)
 ($PWD = $0) =~ s/^(.+)mutat\.pl$/$1/;
+push @INC, $PWD;
+require Percent2Utf8 or die;
 
 # Read picture name from QUERY_STRING env var (GET method)
 # Convert percent-encoded UTF8 query into real UTF8.
-$query_orig = $ENV{QUERY_STRING};
-while ($query_orig) {
-    $query_orig =~ s/^([^%]+|%.{2})(.*)$/$2/;
-    my $part = $1;
-    $part = chr hex $1 if $part =~ /%(.{2})/;
-    $query .= $part;
-}
+$query = Percent2Utf8::p2u($ENV{QUERY_STRING});
 if ($query =~ /^rajz=((.{1,40})\.jpe?g)$/) {
     ($filename, $basename) = ($1, $2);
     if (-f "$PWD$filename") {

@@ -3,7 +3,9 @@
 print <<HEADER;
 Content-type: text/html
 
-<html><head><title>keress a napiban</title></head><body>
+<html><head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>keress a napiban</title></head><body>
 <a href="index.html">napi</a>
 <a href="tegnapi.html">tegnapi</a>
 <a href="komedia.html">kom&eacute;dia</a>
@@ -18,16 +20,18 @@ HEADER
 
 # Find working directory (uhttpd runs this in docroot)
 ($PWD = $0) =~ s/^(.+)keres\.pl$/$1/;
+push @INC, $PWD;
+require Percent2Utf8 or die;
 
 # Read and sanitize POSTed query from stdin
 # Try to find pattern among jpg filenames in dir, print links to them
-$query = <>;
-if ($query =~ /^rajz=(\w{0,40})$/) {
+$query = Percent2Utf8::p2u(<>);
+if ($query =~ /^rajz=(.{0,40})$/) {
     my $pattern = $1;
     opendir LS, $PWD or die "$!";
     foreach (readdir LS) {
         s/\r|\n//g;
-        next unless (/^(\w*$pattern\w*)\.jpe?g/i);
+        next unless (/^(.*$pattern.*)\.jpe?g/i);
         print "<a href=\"mutat.pl?rajz=$_\">$1</a> ";
         open GREP, "grep -i \\\"mutat.pl\?rajz=$_ $PWD/[ki2]*html |" or die "$!";
         while (<GREP>) {
