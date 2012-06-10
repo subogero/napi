@@ -20,18 +20,18 @@ HEADER
 
 # Find working directory (uhttpd runs this in docroot)
 ($PWD = $0) =~ s/^(.+)keres\.pl$/$1/;
-use lib $PWD;
-use Percent2Utf8;
+push @INC, $PWD;
+require Percent2Utf8 or die;
 
 # Read and sanitize POSTed query from stdin
 # Try to find pattern among jpg filenames in dir, print links to them
-$query = Percent2Utf8::p2u <>;
+$query = Percent2Utf8::p2u(<>);
 if ($query =~ /^rajz=(.{0,40})$/) {
     my $pattern = $1;
     opendir LS, $PWD or die "$!";
     foreach (readdir LS) {
         s/\r|\n//g;
-        next unless (/^(.*$pattern*)\.jpe?g/i);
+        next unless (/^(.*$pattern.*)\.jpe?g/i);
         print "<a href=\"mutat.pl?rajz=$_\">$1</a> ";
         open GREP, "grep -i \\\"mutat.pl\?rajz=$_ $PWD/[ki2]*html |" or die "$!";
         while (<GREP>) {
