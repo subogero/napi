@@ -33,7 +33,7 @@ if ($query =~ /^rajz=(.{0,40})$/) {
         s/\r|\n//g;
         next unless (/^(.*$pattern.*)\.jpe?g/i);
         print "<a href=\"mutat.pl?rajz=$_\">$1</a> ";
-        open GREP, "grep -i \\\"mutat.pl\?rajz=$_ $PWD/[ki2]*html |" or die "$!";
+        open GREP, "grep -i \\\"mutat.pl\?rajz=$_ $PWD/*.html |" or die "$!";
         while (<GREP>) {
             /^.+\/(\w+)(\.html):.+$/;
             print "<a href=\"$1$2\"><small><small>$1</small></small></a> ";
