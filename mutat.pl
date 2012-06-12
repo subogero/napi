@@ -42,6 +42,6 @@ print <<FOOTER;
 FOOTER
 
 # Usage stats
-$hits = <STAT> if (open STAT, "$PWD/stat");
+$hits = <STAT> if (open STAT, "$PWD/stat.txt");
 $hits++;
-print STAT $hits if (open STAT, ">$PWD/stat");
+print STAT $hits if (open STAT, ">$PWD/stat.txt");
