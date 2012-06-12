@@ -40,3 +40,8 @@ print <<FOOTER;
 <br><small><a href="http://github.com/subogero">github.com/subogero</a></small>
 </body></html>
 FOOTER
+
+# Usage stats
+$hits = <STAT> if (open STAT, "$PWD/stat");
+$hits++;
+print STAT $hits if (open STAT, ">$PWD/stat");
