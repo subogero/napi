@@ -5,4 +5,4 @@
 *.JPG
 *log
 tmp
-stat.txt
+stat*.txt

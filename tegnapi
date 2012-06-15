@@ -28,6 +28,7 @@ HEADER
 # Create page for each month
 for i in $PAGES; do
   PAGE=`./napi $i`
+  [ -z "$LAST" ] && LAST=$PAGE
   if [ -n "$PAGE" ]; then
     echo '<a href="'${PAGE}'">' >> $FILE
     echo $PAGE | sed -r 's,^(.+)\.html$,\1</a><br>,' >> $FILE
@@ -46,3 +47,8 @@ ny&uacute;jtotta inspir&aacute;ci&oacute;t&oacute;l.
 </body></html>
 FOOTER
 
+# Create monthly usage stats
+if [ -f stat.txt ]; then
+  echo `echo $LAST | sed -r 's/(.+)\.html/\1/'` `cat stat.txt` >> statm.txt
+  rm -f stat.txt
+fi
