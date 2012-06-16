@@ -50,5 +50,5 @@ FOOTER
 # Create monthly usage stats
 if [ -f stat.txt ]; then
   echo `echo $LAST | sed -r 's/(.+)\.html/\1/'` `cat stat.txt` >> statm.txt
-  rm -f stat.txt
+  echo -n 0 > stat.txt
 fi
