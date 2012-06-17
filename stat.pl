@@ -1,4 +1,5 @@
 #!/usr/bin/perl
+($PWD = $0) =~ s/^(.+)stat\.pl$/$1/;
 print <<HEADER;
 Content-type: text/html
 
@@ -14,10 +15,10 @@ Content-type: text/html
 <hr><h3 align="center">napi statisztika</h3><hr>
 HEADER
 
-open STATM, "stat.txt";
+open STATM, "$PWD/stat.txt";
 $statm{ehavi} = <STATM>;
 $max = $statm{ehavi  };
-open STATM, "statm.txt";
+open STATM, "$PWD/statm.txt";
 while (<STATM>) {
     /^(.+) (.+)\n$/;
     $statm{$1} = $2;
