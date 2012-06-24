@@ -2,21 +2,27 @@
 
 if [ "$1" = "-h" ]; then
 cat <<EOF
-Usage: ./comedy-rss [-h] -d <dir-url> -i <input-html>
+Usage: ./comedy-rss [-h] [-t <title>] [-e <description>] -d <dir-url> -i <input-html>
 
 Options:
-  -h              print this help and exit
-  -d <dir-url>    url of the working directory
-                  $DIR_URL environment variable can be used instead
-  -i <input-html> input file to parse
-                  $INPUT_HTML environment variable can be used instead
-
+  -h               print this help and exit
+  -d <dir-url>     url of the working directory
+                   \$DIR_URL environment variable can be used instead
+  -i <input-html>  input file to parse
+                   \$INPUT_HTML environment variable can be used instead
+  -t <title>       title of the rss channel
+                   default if 'comedy'
+  -e <description> description of the rss channel
+                   default is 'Napirajz @ comedy central'
 Create rss file from jpg links in the input html file. 
 The jpg files are handled as local files.
 The rss file's name reflects the input file, with extension changed to rss.
 EOF
 exit 0
 fi
+
+description='Napirajz @ comedy central'
+title='comedy'
 
 while [ -n "$*" ]; do
   if [ "$1" = "-d" ]; then
@@ -27,6 +33,16 @@ while [ -n "$*" ]; do
   if [ "$1" = "-i" ]; then
     shift
     INPUT_HTML=$1
+    shift
+  fi
+  if [ "$1" = "-t" ]; then
+    shift
+    title=$1
+    shift
+  fi
+  if [ "$1" = "-e" ]; then
+    shift
+    description=$1
     shift
   else
     if [ -n "$1" ]; then
@@ -49,9 +65,9 @@ cat > $FILE << HEADER
 <?xml version="1.0"?>
 <rss version="2.0">
 <channel>
-<title>comedy</title>
+<title>$title</title>
 <link>$DIR_URL</link>
-<description>Napirajz @ comedy central</description>
+<description>$description</description>
 <language>hu</language>
 HEADER
 
