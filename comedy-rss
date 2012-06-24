@@ -7,9 +7,9 @@ Usage: ./comedy-rss [-h] [-t <title>] [-e <description>] -d <dir-url> -i <input-
 Options:
   -h               print this help and exit
   -d <dir-url>     url of the working directory
-                   $DIR_URL environment variable can be used instead
+                   \$DIR_URL environment variable can be used instead
   -i <input-html>  input file to parse
-                   $INPUT_HTML environment variable can be used instead
+                   \$INPUT_HTML environment variable can be used instead
   -t <title>       title of the rss channel
                    default if 'comedy'
   -e <description> description of the rss channel
