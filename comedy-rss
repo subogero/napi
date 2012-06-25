@@ -71,9 +71,8 @@ cat > $FILE << HEADER
 <language>hu</language>
 HEADER
 
-PICS=`sed -rn 's/<a href="mutat.pl\?rajz=([^"]+.jpe?g)">[^<]+<\/a>.*/\1/ipg' $INPUT_HTML`
+PICS=`sed -rn 's/<a href="mutat.pl\?rajz=([^"]+.jpe?g)">[^<]+<\/a>.*/\1/p' $INPUT_HTML`
 PICS=`ls -rt $PICS`
- 
 for PIC in $PICS; do 
   LMD=`ls -le $PIC \
   | sed -r 's/^[-a-z]+ +[0-9]+ +[a-z0-9]+ +[a-z0-9]+ +[0-9]+ +(.+) +[^ ]+$/\1/' \
