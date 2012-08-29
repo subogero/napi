@@ -2,7 +2,7 @@
 if [ "$1" = '-h' ]; then cat <<EOF
 tegnapi retrieves webpage http://napirajz.hu/archives/, extracts links to
 monthly archive pages, and creates mirrors for them using script ./napi.
-Also creates tegnapi.html with links to the monthly mirrirs.
+Also creates tegnapi.html with links to the monthly mirrors.
 EOF
 exit 0
 fi
@@ -49,6 +49,6 @@ FOOTER
 
 # Create monthly usage stats
 if [ -f stat.txt ]; then
-  echo `echo $LAST | sed -r 's/(.+)\.html/\1/'` `cat stat.txt` >> statm.txt
+  echo `date -Idate | sed -r 's/^(.+)-(.+)-.+$/\1_\2/'` `cat stat.txt` >> statm.txt
   echo -n 0 > stat.txt
 fi

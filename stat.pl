@@ -26,7 +26,8 @@ while (<STATM>) {
 }
 close STATM;
 $h = keys(%statm) * 10;
-$max += 70;
+$factor = 1130 / $max if $max > 1130;
+$max = $max * $factor + 70;
 
 print <<CANVAS1;
 <canvas id="vaszon" width="$max" height="$h">
@@ -43,7 +44,7 @@ foreach (reverse sort keys %statm) {
 print <<LINE;
 ctx.textAlign='start'; ctx.fillText("$_"        ,  0, $i*10+7);
 ctx.textAlign='right'; ctx.fillText("$statm{$_}", 60, $i*10+7);
-ctx.fillRect(70, $i*10, $statm{$_}, 8);
+ctx.fillRect(70, $i*10, $statm{$_} * $factor, 8);
 LINE
 $i++;
 }
