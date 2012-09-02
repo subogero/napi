@@ -44,6 +44,10 @@ if ($query =~ /^rajz=(.{0,40})$/) {
 }
 
 # Footer
+if (open MOLINO, "$PWD/../molino") {
+    print while <MOLINO>;
+    close MOLINO;
+}
 print <<FOOTER;
 <br><small><a href="http://github.com/subogero">github.com/subogero</a></small>
 </body></html>
