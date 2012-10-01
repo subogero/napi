@@ -49,6 +49,7 @@ FOOTER
 
 # Create monthly usage stats
 if [ -f stat.txt ]; then
+  export TZ='UTC+1' # To fake yesterday
   echo `date -Idate | sed -r 's/^(.+)-(.+)-.+$/\1_\2/'` `cat stat.txt` >> statm.txt
   echo -n 0 > stat.txt
 fi
