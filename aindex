@@ -11,7 +11,7 @@ fi
 
 # Get archive URL in arg1, otherwise generate main page. Generate filename.
 echo >&2 "****************** aindex debug message *******************"
-URL="http://index.hu/napirajz/?p=2"
+URL="http://index.hu/napirajz/"
 FILE="aindex.html"
 echo >&2 "$FILE from $URL"
 
