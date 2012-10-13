@@ -1,10 +1,10 @@
-#!/usr/bin/perl
+#!/usr/bin/perl -w
 # The main datamine: hash of name => { time , src }
 our %mine;
 # First read the existing datamine file if present
 if (open MINE, "mine.csv") {
     while (<MINE>) {
-        my ($name, $time, $src) = split '[,;]';
+        my ($name, $time, $src) = split '[,;\n]';
         $mine{$name} = { time => $time, src => $src };
     }
     close MINE;
@@ -44,6 +44,8 @@ foreach (readdir NAPI) {
 }
 closedir NAPI;
 # Print csv
+open MINE, ">mine.csv" or die $!;
 foreach (sort { $mine{$a}{time} cmp $mine{$b}{time} } keys %mine) {
-    print "$_;$mine{$_}{time};$mine{$_}{src}\n";
+    print MINE "$_;$mine{$_}{time};$mine{$_}{src}\n";
 }
+close MINE;
