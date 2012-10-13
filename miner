@@ -1,0 +1,49 @@
+#!/usr/bin/perl
+# The main datamine: hash of name => { time , src }
+our %mine;
+# First read the existing datamine file if present
+if (open MINE, "mine.csv") {
+    while (<MINE>) {
+        my ($name, $time, $src) = split '[,;]';
+        $mine{$name} = { time => $time, src => $src };
+    }
+    close MINE;
+}
+# Go through html files to extend the datamine
+opendir NAPI, "." or die $!;
+foreach (readdir NAPI) {
+    if (/\.jpe?g/i) {
+        my @mtime = localtime ((stat $_)[9]);
+        $mtime[5] += 1900;
+        $mtime[4]++;
+        $mtime[4] =~ s/^(\d)$/0$1/;
+        my $time = "$mtime[5]_$mtime[4]_$mtime[3]";
+        $mine{$_}{time} = $time unless exists $mine{$_};
+    } elsif (/^(.+)\.html/) {
+        my $basename = $1;
+        my ($month, $src);
+        if ($basename =~ /^\d{4}_\d{2}$/) {
+            $src = 'napi';
+            $month = $basename;
+        } else {
+            ($src = $basename) =~ s/^index$/napi/;
+        }
+        my $i = 0;
+        open HTML, $_ or die $!;
+        while (<HTML>) {
+            $i++;
+            next unless (/rajz=(.+)">/);
+            my $name = $1;
+            my $day = 39 - $i;
+            $time = $month . "_$day" if $month;
+            $mine{$name}{time} = $time if $time;
+            $mine{$name}{src} = $src;
+        }
+        close HTML;
+    }
+}
+closedir NAPI;
+# Print csv
+foreach (sort { $mine{$a}{time} cmp $mine{$b}{time} } keys %mine) {
+    print "$_;$mine{$_}{time};$mine{$_}{src}\n";
+}
