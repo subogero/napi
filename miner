@@ -5,6 +5,7 @@ our %mine;
 if (open MINE, "mine.csv") {
     while (<MINE>) {
         my ($name, $time, $src) = split '[,;\n]';
+        $time =~ s/_(\d)(_|\b)/_0$1$2/g;
         $mine{$name} = { time => $time, src => $src };
     }
     close MINE;
@@ -17,6 +18,7 @@ foreach (readdir NAPI) {
         $mtime[5] += 1900;
         $mtime[4]++;
         $mtime[4] =~ s/^(\d)$/0$1/;
+        $mtime[3] =~ s/^(\d)$/0$1/;
         my $time = "$mtime[5]_$mtime[4]_$mtime[3]";
         $mine{$_}{time} = $time unless $mine{$_}{time};
     } elsif (/^(.+)\.html/) {
@@ -34,7 +36,7 @@ foreach (readdir NAPI) {
             $i++;
             next unless (/rajz=(.+)">/);
             my $name = $1;
-            my $day = 39 - $i;
+            (my $day = 39 - $i) =~ s/^(\d)$/0$1/;
             my $time = $month . "_$day" if $month;
             $mine{$name}{time} = $time if $time;
             $mine{$name}{src} = $src;
