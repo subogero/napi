@@ -1,11 +1,12 @@
 #!/usr/bin/perl
-sub napi; sub tegnapi; sub keres; sub mutat;
+sub napi; sub tegnapi; sub keres; sub mutat; sub statm;
 # Header
 print <<HEADER;
 Content-type: text/html
 
+<!DOCTYPE html>
 <html><head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<meta charset="utf-8" />
 <title>subogero napi</title></head><body>
 <a href="?napi">napi</a>
 <a href="?tegnapi">tegnapi</a>
@@ -25,6 +26,7 @@ my $query = $ENV{QUERY_STRING};
 if    ($query[0] =~ /keres/  ) { keres   @query }
 elsif ($query[0] =~ /tegnapi/) { tegnapi @query }
 elsif ($query[0] =~ /mutat/  ) { mutat   @query }
+elsif ($query[0] =~ /stat/   ) { statm   @query }
 else                           { napi           }
 
 # Footer
@@ -39,7 +41,9 @@ h t t p : / / i n d e x . h u / n a p i r a j z ----
 h t t p : / / c o m e d y c e n t r a l . h u
 <br>Ez az oldal azok számára készült, akiket a céges internet proxy megfosztott
 a napi rajz nyújtotta inspirációtól.<hr>
-<a href="http://github.com/subogero">github.com/subogero</a></small>
+<a href="http://github.com/subogero">github.com/subogero</a>
+<a href="?stat">statisztika</a>
+</small>
 </body></html>
 FOOTER
 
@@ -115,7 +119,7 @@ FORM
     close MINE;
 }
 
-####### Show a picture
+####### Show a picture and update usage statistics
 sub mutat {
     $_[0] =~ /mutat=(.+)/;
     print "<img src=\"$1\"><br>\n";
@@ -144,4 +148,44 @@ sub mutat {
     } else {
         print STAT $hits if open STAT, ">stat.txt";
     }
+}
+
+####### Show usage statistics
+sub statm {
+    open STATM, "stat.txt";
+    $statm{ehavi} = <STATM>;
+    $max = $statm{ehavi  };
+    open STATM, "statm.txt";
+    while (<STATM>) {
+        /^(.+) (.+)\n$/;
+        $statm{$1} = $2;
+        $max = $2 if ($max < $2);
+    }
+    close STATM;
+    $h = keys(%statm) * 10;
+    $factor = $max > 1000 ? 1000 / $max : 1;
+    $max = $max * $factor + 70;
+    print "<canvas id=\"vaszon\" width=\"$max\" height=\"$h\">";
+    foreach (reverse sort keys %statm) {
+        print "$_ $statm{$_}<br>";
+    }
+    print <<CANVAS1;
+</canvas>
+<script type="text/javascript">
+var c=document.getElementById("vaszon");
+var ctx=c.getContext("2d");
+ctx.font="8px monospace";
+CANVAS1
+    $i = 0;
+    foreach (reverse sort keys %statm) {
+        print <<LINE;
+ctx.textAlign='start'; ctx.fillText("$_"        ,  0, $i*10+7);
+ctx.textAlign='right'; ctx.fillText("$statm{$_}", 60, $i*10+7);
+ctx.fillRect(70, $i*10, $statm{$_} * $factor, 8);
+LINE
+        $i++;
+    }
+    print <<CANVAS2;
+</script>
+CANVAS2
 }
