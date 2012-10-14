@@ -120,4 +120,28 @@ sub mutat {
     $_[0] =~ /mutat=(.+)/;
     print "<img src=\"$1\"><br>\n";
     print "<a href=\"$1\">$1</a><br>\n";
+    # Usage stats
+    `date -Idate` =~ /^(.+)-(.+)-.+$/;
+    my ($year, $month) = ($1, $2);
+    $month =~ s/^0//;
+    $month--;
+    if ($month <= 0) {
+        $year--;
+        $month = 12;
+    }
+    $month =~ s/^(\d)$/0$1/;
+    my $last_month = $year . "_" . $month;
+    my $last_statm;
+    if (open STATM, "statm.txt") {
+        ($last_statm = $_) =~ s/^(.+) .+/$1/ while (<STATM>);
+        close STATM;
+    }
+    my $hits = <STAT> if open STAT, "stat.txt";
+    $hits++;
+    if ($last_month > $last_statm) {
+        print STAT 0 if open STAT, ">stat.txt";
+        print STATM "$last_month $hits\n" if open STATM, ">>statm.txt";
+    } else {
+        print STAT $hits if open STAT, ">stat.txt";
+    }
 }
