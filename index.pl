@@ -108,8 +108,8 @@ FORM
     (my $rajz = $_[1]) =~ s/rajz=(.*)/$1/;
     open MINE, "mine.csv" or print "Could not find database.\n" and return;
     while (<MINE>) {
-        if (/^((.*$rajz.*)\.jpe?g);.+;$src$/i) {
-            print "<a href=\"?mutat=$1\">$2</a><br>\n"
+        if (/^((.*$rajz.*)\.jpe?g);.+;($src)$/i) {
+            print "<a href=\"?mutat=$1\">$2</a> $3<br>\n"
         }
     }
     close MINE;
