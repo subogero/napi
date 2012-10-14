@@ -5,16 +5,14 @@ The famous Hungarian comic series is filtered out by many corporate proxies,
 thus depriving fans of vital inspiration.
 
 To overcome this, the site needs to be mirrored.
-This mirror contains 3 main pages:
-- index.html  : the last 20 comics
-- tegnapi.html: archives grouped my months
-- keres.pl|cgi: search in comics by filename
+This mirror contains 3 main pages, powered by index.pl:
+- napi   : the last 31 days
+- tegnapi: archives grouped my months
+- keres  : search in comics by filename and source
 
 Call the following scripts regularly from cron to update the site:
-- napi   : regularly
-- tegnapi: end of each month
+- frissit : hourly? 
 
 This site was designed to be small, running on OpenWRT routers as well.
-If perl is installed, keres.pl is used for search,
-otherwise it's the keres.cgi shell script.
-The latter is bloody slow.
+Required packages: perl, curl, wget.
+The site uses CGI technology, but not the CGI.pm Perl module.
