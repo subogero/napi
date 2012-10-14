@@ -7,7 +7,7 @@ Content-type: text/html
 <html><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>subogero napi</title></head><body>
-<a href="index.pl">napi</a>
+<a href="?napi">napi</a>
 <a href="?tegnapi">tegnapi</a>
 <a href="?keres">keres</a>
 <hr><h3 align="center">subogero napi</h3><hr>
@@ -89,7 +89,7 @@ sub tegnapi {
 ####### Try to find pattern among jpg filenames in dir, print links to them
 sub keres {
     print <<FORM;
-<form method="GET" action="index.pl?keres">
+<form method="GET" action="?keres">
 Forrás:
 <select name="keres">
 <option value="">mind</option>
