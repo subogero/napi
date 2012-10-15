@@ -1,5 +1,5 @@
 #!/bin/sh
-cd $(echo $_ | sed -r 's|^(.*/).+$|\1|')
+cd $(echo $0 | sed -r 's|^(.*/).+$|\1|')
 FILE=mine.csv
 DATE=$(date -Idate | sed 's/-/_/g')
 
