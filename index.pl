@@ -1,5 +1,5 @@
 #!/usr/bin/perl
-sub napi; sub tegnapi; sub keres; sub mutat; sub statm;
+sub napi; sub tegnapi; sub keres; sub mutat; sub statf; sub statm; sub statu;
 # Header
 print <<HEADER;
 Content-type: text/html
@@ -124,7 +124,11 @@ sub mutat {
     $_[0] =~ /mutat=(.+)/;
     print "<img src=\"$1\"><br>\n";
     print "<a href=\"$1\">$1</a><br>\n";
-    # Usage stats
+    statf;
+}
+
+# Usage stats
+sub statf {
     `date -Idate` =~ /^(.+)-(.+)-.+$/;
     my ($year, $month) = ($1, $2);
     $month =~ s/^0//;
@@ -148,6 +152,7 @@ sub mutat {
     } else {
         print STAT $hits if open STAT, ">stat.txt";
     }
+    statu;
 }
 
 ####### Show usage statistics
@@ -188,4 +193,26 @@ LINE
     print <<CANVAS2;
 </script>
 CANVAS2
+}
+
+# Update user statistics
+sub statu {
+    my $remote_host = $ENV{REMOTE_HOST} || $ENV{REMOTE_ADDR};
+    return unless $remote_host;
+    my $remote_host_found = 0;
+    open STATU_NEW, ">statu.csv~" or return;
+    open STATU, "statu.csv";
+    while (<STATU>) {
+        if (/^$remote_host;(\d+)/) {
+            $remote_host_found = 1;
+            my $num = $1 + 1;
+            print STATU_NEW "$remote_host;$num\n";
+        } else {
+            print STATU_NEW;
+        }
+    }
+    print STATU_NEW "$remote_host;1\n" unless $remote_host_found;
+    close STATU;
+    close STATU_NEW;
+    rename "statu.csv~", "statu.csv";
 }
