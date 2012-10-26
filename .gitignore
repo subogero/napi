@@ -3,6 +3,7 @@
 *.jpg
 *.jpeg
 *.JPG
-log
+*log
 tmp
-
+stat*.txt
+statu.csv

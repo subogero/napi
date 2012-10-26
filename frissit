@@ -1,0 +1,51 @@
+#!/bin/sh
+cd $(echo $0 | sed -r 's|^(.*/).+$|\1|')
+FILE=mine.csv
+DATE=$(date -Idate | sed 's/-/_/g')
+
+# napi
+URL="http://napirajz.hu/"
+curl -f ${URL} >tmp 2>/dev/null || exit 1 
+while true; do
+  PICS=`cat tmp | sed -nr 's,^[ \t<p>]*<img src=\"(/[fF]iles/[/A-Za-z0-9_.]+)\".+\r?$,http://napirajz.hu\1,p'`
+  [ -n "$PICS" ] && echo >&2 "regex 1" && break
+  PICS=`cat tmp | sed -nr 's,^[ \t<p>]*<img src=\"(http://napirajz.freeblog.hu/[fF]iles/[A-Za-z0-9_.]+)\".+\r?$,\1,p'`
+  [ -n "$PICS" ] && echo >&2 "regex 2" && break
+  PICS=`cat tmp | sed -nr 's,^[ \t<p>]*<img src=\"(http://napirajz.hu/[fF]iles/[A-Za-z0-9_.]+)\".+\r?$,\1,p'`
+  [ -n "$PICS" ] && echo >&2 "regex 3" && break
+                    echo >&2 "regex -" && exit 1
+done
+for i in $PICS; do
+  NODIR=$(echo $i | sed -r 's|^.*/(.+)$|\1|')
+  [ -f $NODIR ] && continue
+  wget "${i}"
+  echo "$NODIR;$DATE;napi"
+done >> $FILE
+
+# aindex
+URL="http://index.hu/napirajz/"
+curl -f ${URL} 2>/dev/null | grep '<span class="imageholder clearafter"><img id=' > tmp
+[ `ls -l tmp | awk '{ print $5 }'` = 0 ] && echo >&2 "No pics found" && exit 1
+while read i; do
+  URL=`echo $i | sed -rn 's/^.+src="(.+)" alt=.+$/\1/p'`
+  PIC=`echo $i | sed -rn 's:^.+src=".+/([0-9_a-fwm]+\.jpg)" alt=.+$:\1:p'`
+  ALT=`echo $i | sed -rn 's/^.+alt="(.+)" width=.+$/\1/p' | sed 's/ /_/g'`
+  [ -f "${ALT}.jpg" ] && continue
+  wget ${WGETOPT} "${URL}"
+  mv $PIC ${ALT}.jpg
+  echo "${ALT}.jpg;$DATE;aindex"
+done < tmp >> $FILE
+
+# komédia
+URL="http://www.comedycentral.hu/photos/007_cruton/?flipbook=napirajz-comedy-2012-1 \
+     http://www.comedycentral.hu/photos/01_csigolyaid/?flipbook=napirajz-comedy"
+PICS=`curl $URL 2>/dev/null \
+| sed -rn 's:^.+src=.(.+)\?(width=70|height=53).+Grafitember.+$:\1:p'`
+for i in $PICS; do
+  NODIR=$(echo $i | sed -r 's|^.*/(.+)$|\1|')
+  [ -f "$NODIR" ] && continue
+  wget "$i"
+  echo "$NODIR;$DATE;komedia"
+done >> $FILE
+
+rm tmp
