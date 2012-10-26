@@ -5,13 +5,13 @@ cat <<EOF
 Usage: ./comedy-rss [-h] -d <dir-url> -i <input-html>
 
 Options:
-  -h              print this help and exit
-  -d <dir-url>    url of the working directory
-                  $DIR_URL environment variable can be used instead
-  -i <input-html> input file to parse
-                  $INPUT_HTML environment variable can be used instead
+  -h             print this help and exit
+  -d <dir-url>   url of the working directory
+                 $DIR_URL environment variable can be used instead
+  -i <input-csv  input file to parse
+                 $INPUT_CSV environment variable can be used instead
 
-Create rss file from jpg links in the input html file. 
+Create rss file from jpg links in the input csv file. 
 The jpg files are handled as local files.
 The rss file's name reflects the input file, with extension changed to rss.
 EOF
@@ -26,7 +26,7 @@ while [ -n "$*" ]; do
   fi
   if [ "$1" = "-i" ]; then
     shift
-    INPUT_HTML=$1
+    INPUT_CSV=$1
     shift
   else
     if [ -n "$1" ]; then
@@ -39,11 +39,11 @@ done
 if [ -z "$DIR_URL" ]; then
   exit 1
 fi
-if [ -z "$INPUT_HTML" ]; then
+if [ -z "$INPUT_CSV" ]; then
   exit 1
 fi
 
-FILE=`echo ${INPUT_HTML%.*}.rss`
+FILE=`echo ${INPUT_CSV%.*}.rss`
 
 cat > $FILE << HEADER
 <?xml version="1.0"?>
@@ -51,28 +51,25 @@ cat > $FILE << HEADER
 <channel>
 <title>comedy</title>
 <link>$DIR_URL</link>
-<description>Napirajz @ comedy central</description>
+<description>work of GrafitEmber</description>
 <language>hu</language>
 HEADER
 
-PICS=`cat $INPUT_HTML | sed -rn 's/<a href="([^"]+.jpg)">[^<]+<\/a>.*/\1/pg'`
-PICS=`ls -rt $PICS`
- 
-for PIC in $PICS; do 
+IFS=';'
+while read PIC DATE SRC; do 
   LMD=`ls -le $PIC \
   | sed -r 's/^[-a-z]+ +[0-9]+ +[a-z0-9]+ +[a-z0-9]+ +[0-9]+ +(.+) +[^ ]+$/\1/' \
   | sed -r 's/^(.+) (.+) (.+) (.+) (.+)$/\1, \3 \2 \5 \4 +0100/'`
   DESC=${PIC%.*}
   cat >> $FILE << ITEM
 <item>
-<title>$DESC</title>
+<title>$DESC from $SRC</title>
 <link>$DIR_URL/$PIC</link>
 <description>&lt;img src="$DIR_URL/$PIC"/&gt;</description>
 <pubDate>$LMD</pubDate>
 </item>
 ITEM
-done
-
+done < $INPUT_CSV 
 
 
 cat >> $FILE << FOOTER
