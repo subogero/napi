@@ -1,4 +1,5 @@
 #!/bin/sh
+cd $(echo $0 | sed -r 's|^(.*/).+$|\1|')
 
 if [ "$1" = "-h" ]; then
 cat <<EOF
@@ -8,8 +9,6 @@ Options:
   -h               print this help and exit
   -d <dir-url>     url of the working directory
                    \$DIR_URL environment variable can be used instead
-  -i <input-html>  input file to parse
-                   \$INPUT_HTML environment variable can be used instead
   -t <title>       title of the rss channel
                    default if 'comedy'
   -e <description> description of the rss channel
@@ -23,16 +22,13 @@ fi
 
 description='Napirajz @ comedy central'
 title='comedy'
+INPUT_CSV=mine.csv
+FILE=napi.rss
 
 while [ -n "$*" ]; do
   if [ "$1" = "-d" ]; then
     shift
     DIR_URL=$1
-    shift
-  fi
-  if [ "$1" = "-i" ]; then
-    shift
-    INPUT_HTML=$1
     shift
   fi
   if [ "$1" = "-t" ]; then
@@ -55,11 +51,6 @@ done
 if [ -z "$DIR_URL" ]; then
   exit 1
 fi
-if [ -z "$INPUT_HTML" ]; then
-  exit 1
-fi
-
-FILE=`echo ${INPUT_HTML%.*}.rss`
 
 cat > $FILE << HEADER
 <?xml version="1.0"?>
@@ -71,23 +62,21 @@ cat > $FILE << HEADER
 <language>hu</language>
 HEADER
 
-PICS=`sed -rn 's/<a href="mutat.pl\?rajz=([^"]+.jpe?g)">[^<]+<\/a>.*/\1/p' $INPUT_HTML`
-PICS=`ls -rt $PICS`
-for PIC in $PICS; do 
+IFS=';'
+while read PIC DATE SRC; do 
   LMD=`ls -le $PIC \
   | sed -r 's/^[-a-z]+ +[0-9]+ +[a-z0-9]+ +[a-z0-9]+ +[0-9]+ +(.+) +[^ ]+$/\1/' \
   | sed -r 's/^(.+) (.+) (.+) (.+) (.+)$/\1, \3 \2 \5 \4 +0100/'`
   DESC=${PIC%.*}
   cat >> $FILE << ITEM
 <item>
-<title>$DESC</title>
+<title>$DESC from $SRC</title>
 <link>$DIR_URL/$PIC</link>
 <description>&lt;img src="$DIR_URL/$PIC"/&gt;</description>
 <pubDate>$LMD</pubDate>
 </item>
 ITEM
-done
-
+done < $INPUT_CSV 
 
 
 cat >> $FILE << FOOTER
