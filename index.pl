@@ -11,6 +11,7 @@ Content-type: text/html
 <a href="?napi">napi</a>
 <a href="?tegnapi">tegnapi</a>
 <a href="?keres">keres</a>
+<a href="napi.rss"><img src="rss.gif"></a>
 <hr><h3 align="center">subogero napi</h3><hr>
 HEADER
 
