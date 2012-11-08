@@ -21,6 +21,15 @@ chdir $PWD;
 push @INC, $PWD;
 require Percent2Utf8 or die;
 
+# Store direcory URL upon first use
+$dir_url = 'http://' . $ENV{HTTP_HOST} . $ENV{REQUEST_URI};
+$dir_url =~ s:/$::;
+unless (-f "dir_url.txt") {
+    open URL, ">dir_url.txt";
+    print URL "$dir_url\n";
+    close URL;
+}
+
 # Read and sanitize POSTed query from stdin
 my $query = $ENV{QUERY_STRING};
 @query = split /&/, Percent2Utf8::p2u($query);

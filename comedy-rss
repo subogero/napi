@@ -3,12 +3,12 @@ cd $(echo $0 | sed -r 's|^(.*/).+$|\1|')
 
 if [ "$1" = "-h" ]; then
 cat <<EOF
-Usage: ./comedy-rss [-h] [-t <title>] [-e <description>] -d <dir-url> -i <input-html>
+Usage: ./comedy-rss [-h] | [-t <title>] [-e <description>] [-d <dir-url>]
 
 Options:
   -h               print this help and exit
   -d <dir-url>     url of the working directory
-                   \$DIR_URL environment variable can be used instead
+                   taken from dir_url.txt file by default
   -t <title>       title of the rss channel
                    default if 'comedy'
   -e <description> description of the rss channel
@@ -49,7 +49,7 @@ while [ -n "$*" ]; do
 done
 
 if [ -z "$DIR_URL" ]; then
-  exit 1
+  DIR_URL=$(cat dir_url.txt)
 fi
 
 cat > $FILE << HEADER
