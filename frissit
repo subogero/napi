@@ -49,3 +49,5 @@ for i in $PICS; do
 done >> $FILE
 
 rm tmp
+
+./comedy-rss
