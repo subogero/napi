@@ -10,9 +10,9 @@ Options:
   -d <dir-url>     url of the working directory
                    taken from dir_url.txt file by default
   -t <title>       title of the rss channel
-                   default if 'comedy'
+                   default if 'napi'
   -e <description> description of the rss channel
-                   default is 'Napirajz @ comedy central'
+                   default is 'Napirajz @ mindenhol'
 Create rss file from jpg links in the input html file. 
 The jpg files are handled as local files.
 The rss file's name reflects the input file, with extension changed to rss.
@@ -20,8 +20,8 @@ EOF
 exit 0
 fi
 
-description='Napirajz @ comedy central'
-title='comedy'
+description='Napirajz @ mindenhol'
+title='napi'
 INPUT_CSV=mine.csv
 FILE=napi.rss
 
