@@ -74,8 +74,7 @@ perl -e '@c = reverse <>; print shift @c while $i++ < 10' $INPUT_CSV \
 <item>
 <title>$DESC from $SRC</title>
 <link>$DIR_URL/?mutat=$PIC</link>
-<description>&lt;img src="$DIR_URL/$PIC"/&gt;</description>
-&lt;img src=&quot;$DIR_URL/$PIC&quot; alt=&quot;$PIC&quot; class=&quot;$IMG_POS&quot; /&gt;
+<description>&lt;img src=&quot;$DIR_URL/$PIC&quot; alt=&quot;$PIC&quot; class=&quot;$IMG_POS&quot; /&gt;</description>
 <pubDate>$LMD</pubDate>
 </item>
 ITEM
