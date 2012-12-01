@@ -12,7 +12,6 @@ Content-type: text/html
 <a href="?tegnapi">tegnapi</a>
 <a href="?keres">keres</a>
 <a href="napi.rss"><img src="rss.gif"></a>
-<hr><h3 align="center">subogero napi</h3><hr>
 HEADER
 
 # Find working directory (uhttpd runs this in docroot)
@@ -70,9 +69,10 @@ sub napi {
                  + ($time[2] -    1);
         push @hits, { name => $name, src => $src } if $time > $after;
     }
+    print "<hr><h3 align=\"center\">subogero napi</h3><hr>";
     foreach (reverse @hits) {
         (my $basename = $_->{name}) =~ s/^(.+)\..+$/$1/;
-        print "<a href=\"?mutat=$_->{name}\">$basename</a> $_->{src}<br>\n";
+        print "<a href=\"?mutat=$_->{name}&honnan=$_->{src}\">$basename</a> $_->{src}<br>\n";
     }
 }
 
@@ -85,7 +85,7 @@ sub tegnapi {
     while (<MINE>) {
         if ($month) {
             if (/^((.+)\.jpe?g);$month.*;(.*)$/i) {
-                $result = "<a href=\"?mutat=$1\">$2</a> $3<br>\n" . $result;
+                $result = "<a href=\"?mutat=$1&honnan=$3\">$2</a> $3<br>\n" . $result;
             }
         } else {
             /^.+;(\d{4}_\d{2}).+/;
@@ -96,12 +96,14 @@ sub tegnapi {
         }
     }
     close MINE;
+    print "<hr><h3 align=\"center\">subogero tegnapi</h3><hr>";
     print $result;
 }
 
 ####### Try to find pattern among jpg filenames in dir, print links to them
 sub keres {
     print <<FORM;
+<hr><h3 align="center">subogero napi keresés</h3><hr>
 <form method="GET" action="?keres">
 Forrás:
 <select name="keres">
@@ -122,7 +124,7 @@ FORM
     open MINE, "mine.csv" or print "Could not find database.\n" and return;
     while (<MINE>) {
         if (/^((.*$rajz.*)\.jpe?g);.+;($src)$/i) {
-            print "<a href=\"?mutat=$1\">$2</a> $3<br>\n"
+            print "<a href=\"?mutat=$1&honnan=$3\">$2</a> $3<br>\n"
         }
     }
     close MINE;
@@ -130,6 +132,9 @@ FORM
 
 ####### Show a picture and update usage statistics
 sub mutat {
+    $_[1] =~ /honnan=(.*)/;
+    my $src = $1 || 'mittomén';
+    print "<hr><h3 align=\"center\">subogero $src</h3><hr>";
     $_[0] =~ /mutat=(.+)/;
     print "<img src=\"$1\"><br>\n";
     print "<a href=\"$1\">$1</a><br>\n";
