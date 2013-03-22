@@ -13,7 +13,7 @@ while true; do
   [ -n "$PICS" ] && echo >&2 "regex 2" && break
   PICS=`cat tmp | sed -nr 's,^[ \t<p>]*<img src=\"(http://napirajz.hu/[fF]iles/[A-Za-z0-9_.]+)\".+\r?$,\1,p'`
   [ -n "$PICS" ] && echo >&2 "regex 3" && break
-                    echo >&2 "regex -" && exit 1
+                    echo >&2 "regex -" && break
 done
 for i in $PICS; do
   NODIR=$(echo $i | sed -r 's|^.*/(.+)$|\1|')
@@ -25,7 +25,7 @@ done >> $FILE
 # aindex
 URL="http://index.hu/napirajz/"
 curl -f ${URL} 2>/dev/null | grep '<span class="imageholder clearafter"><img id=' > tmp
-[ `ls -l tmp | awk '{ print $5 }'` = 0 ] && echo >&2 "No pics found" && exit 1
+[ `ls -l tmp | awk '{ print $5 }'` = 0 ] && echo >&2 "No pics found"
 while read i; do
   URL=`echo $i | sed -rn 's/^.+src="(.+)" alt=.+$/\1/p'`
   PIC=`echo $i | sed -rn 's:^.+src=".+/([0-9_a-fwm]+\.jpg)" alt=.+$:\1:p'`
