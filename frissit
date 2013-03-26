@@ -4,15 +4,11 @@ FILE=mine.csv
 DATE=$(date -Idate | sed 's/-/_/g')
 
 # napi
-URL="http://napirajz.hu/"
+URL="http://napirajz.wordpress.com/"
 curl -f ${URL} >tmp 2>/dev/null || exit 1 
 while true; do
-  PICS=`cat tmp | sed -nr 's,^[ \t<p>]*<img src=\"(/[fF]iles/[/A-Za-z0-9_.]+)\".+\r?$,http://napirajz.hu\1,p'`
+  PICS=`cat tmp | sed -nr 's;^.*<p><img src="(http://napirajz\.files\.wordpress\.com/[0-9]{4}/[0-9]{2}/.+jpe?g)\?w=.+$;\1;pi'`
   [ -n "$PICS" ] && echo >&2 "regex 1" && break
-  PICS=`cat tmp | sed -nr 's,^[ \t<p>]*<img src=\"(http://napirajz.freeblog.hu/[fF]iles/[A-Za-z0-9_.]+)\".+\r?$,\1,p'`
-  [ -n "$PICS" ] && echo >&2 "regex 2" && break
-  PICS=`cat tmp | sed -nr 's,^[ \t<p>]*<img src=\"(http://napirajz.hu/[fF]iles/[A-Za-z0-9_.]+)\".+\r?$,\1,p'`
-  [ -n "$PICS" ] && echo >&2 "regex 3" && break
                     echo >&2 "regex -" && break
 done
 for i in $PICS; do
