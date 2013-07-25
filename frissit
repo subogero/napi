@@ -7,7 +7,7 @@ DATE=$(date -Idate | sed 's/-/_/g')
 URL="http://napirajz.hu/"
 curl -f ${URL} >tmp 2>/dev/null || exit 1 
 while true; do
-  PICS=`cat tmp | sed -nr 's;^.*<p><img src="(http://napirajz\.hu/wp-content/uploads/.+jpe?g).+$;\1;pi'`
+  PICS=`cat tmp | sed -nr 's;^.*<img .*src="(http://napirajz\.hu/wp-content/uploads/.+jpe?g).+$;\1;pi'`
   [ -n "$PICS" ] && echo >&2 "regex 1" && break
                     echo >&2 "regex -" && break
 done
