@@ -19,18 +19,17 @@ for i in $PICS; do
 done >> $FILE
 
 # aindex
-URL="http://index.hu/napirajz/"
-curl -f ${URL} 2>/dev/null | grep '<span class="imageholder clearafter"><img id=' > tmp
+URL=`curl -f http://index.hu/napirajz/ 2>/dev/null | sed -rn '/rovatajanlo +vezeto/,/<\/a>/p' | sed -rn 's/^.*(http.+)".*$/\1/p'`
+curl -f ${URL} 2>/dev/null | sed -rn 's/^.*og:(title|image).+="(.+)".*$/\1 \2/p' >tmp
 [ `ls -l tmp | awk '{ print $5 }'` = 0 ] && echo >&2 "No pics found"
-while read i; do
-  URL=`echo $i | sed -rn 's/^.+src="(.+)" alt=.+$/\1/p'`
-  PIC=`echo $i | sed -rn 's:^.+src=".+/([0-9_a-fwm]+\.jpg)" alt=.+$:\1:p'`
-  ALT=`echo $i | sed -rn 's/^.+alt="(.+)" width=.+$/\1/p' | sed 's/ /_/g'`
-  [ -f "${ALT}.jpg" ] && continue
+ALT=`sed -rn 's|^title ||p' tmp`
+URL=`sed -rn 's|^image ||p' tmp`
+PIC=`sed -rn 's|^image .+/||p' tmp`
+if [ ! -f "${ALT}.jpg" ]; then
   wget ${WGETOPT} "${URL}"
   mv $PIC ${ALT}.jpg
-  echo "${ALT}.jpg;$DATE;aindex"
-done < tmp >> $FILE
+  echo "${ALT}.jpg;$DATE;aindex" >> $FILE
+fi
 
 # komédia
 URL="http://www.comedycentral.hu/photos/007_cruton/?flipbook=napirajz-comedy-2012-1 \
