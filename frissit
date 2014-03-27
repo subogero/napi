@@ -1,49 +1,67 @@
 #!/bin/sh
+if [ "$1" = -h ]; then
+  cat <<EOF
+Szinopszis: ./frissit [ -n | -i | -c ]
+-n csak napirajz
+-i csak a'index
+-c csak comedycentral
+EOF
+  exit 0
+fi
+
 cd $(echo $0 | sed -r 's|^(.*/).+$|\1|')
 FILE=mine.csv
 DATE=$(date -Idate | sed 's/-/_/g')
 
 # napi
-URL="http://napirajz.hu/"
-curl -f ${URL} >tmp 2>/dev/null || exit 1 
-while true; do
-  PICS=`cat tmp | sed -nr 's;^.*<img .*src="(http://napirajz\.hu/wp-content/uploads/.+jpe?g).+$;\1;p'`
-  [ -n "$PICS" ] && echo >&2 "regex 1" && break
-                    echo >&2 "regex -" && break
-done
-for i in $PICS; do
-  NODIR=$(echo $i | sed -r 's|^.*/(.+)$|\1|')
-  [ -f $NODIR ] && continue
-  wget "${i}"
-  echo "$NODIR;$DATE;napi"
-done >> $FILE
-
-# aindex
-URL=`curl -f http://index.hu/napirajz/ 2>/dev/null | sed -rn '/rovatajanlo +vezeto/,/<\/a>/p' | sed -rn 's/^.*(http.+)".*$/\1/p'`
-curl -f ${URL} 2>/dev/null | sed -rn 's/^.*og:(title|image).+="(.+)".*$/\1 \2/p' >tmp
-[ `ls -l tmp | awk '{ print $5 }'` = 0 ] && echo >&2 "No pics found"
-ALT=`sed -rn 's|^title ||p' tmp`
-URL=`sed -rn 's|^image ||p' tmp`
-PIC=`sed -rn 's|^image .+/||p' tmp`
-if [ ! -f "${ALT}.jpg" ]; then
-  wget ${WGETOPT} "${URL}"
-  mv $PIC ${ALT}.jpg
-  echo "${ALT}.jpg;$DATE;aindex" >> $FILE
+if [ "$1" != -i -a "$1" != -c ]; then
+  URL="http://napirajz.hu/"
+  curl -f ${URL} >tmp 2>/dev/null || exit 1 
+  while true; do
+    PICS=`cat tmp | sed -nr 's;^.*<img .*src="(http://napirajz\.hu/wp-content/uploads/.+jpe?g).+$;\1;p'`
+    [ -n "$PICS" ] && echo >&2 "regex 1" && break
+                      echo >&2 "regex -" && break
+  done
+  for i in $PICS; do
+    NODIR=$(echo $i | sed -r 's|^.*/(.+)$|\1|')
+    [ -f $NODIR ] && continue
+    wget "${i}"
+    echo "$NODIR;$DATE;napi"
+  done >> $FILE
 fi
 
-# komÃ©dia
-URL="http://www.comedycentral.hu/photos/007_cruton/?flipbook=napirajz-comedy-2012-1 \
-     http://www.comedycentral.hu/photos/01_csigolyaid/?flipbook=napirajz-comedy \
-     http://www.comedycentral.hu/photos/103_krumpli?flipbook=napirajz-comedy-2013 \
-     http://www.comedycentral.hu/photos/103_krumpli?flipbook=napirajz-comedy-2014"
-PICS=`curl $URL 2>/dev/null \
-| sed -rn 's:^.+src=.(.+)\?(width=70|height=53).+Grafitember.+$:\1:p'`
-for i in $PICS; do
-  NODIR=$(echo $i | sed -r 's|^.*/(.+)$|\1|')
-  [ -f "$NODIR" ] && continue
-  wget "$i"
-  echo "$NODIR;$DATE;komedia"
-done >> $FILE
+# aindex
+if [ "$1" != -n -a "$1" != -c ]; then
+  URLS=`curl -f http://index.hu/napirajz/ 2>/dev/null | sed -rn '/rovatajanlo +(vezeto|left|right)/,/<\/a>/p' | sed -rn 's/^.*(http.+)".*$/\1/p'`
+  for URL in $URLS; do
+    curl -f ${URL} 2>/dev/null | sed -rn 's/^.*og:(title|image).+="(.+)".*$/\1 \2/p' >tmp
+    [ `ls -l tmp | awk '{ print $5 }'` = 0 ] && echo >&2 "No pics found"
+    ALT=`sed -rn 's|^title ||p' tmp | sed -r 's/[ .?!]/_/g'`
+    URL=`sed -rn 's|^image ||p' tmp`
+    PIC=`sed -rn 's|^image .+/||p' tmp`
+    if [ ! -f "${ALT}.jpg" ]; then
+      wget ${WGETOPT} "${URL}"
+      mv $PIC ${ALT}.jpg
+      echo "${ALT}.jpg;$DATE;aindex" >> $FILE
+    fi
+  done
+fi
+
+# komédia
+if [ "$1" != -n -a "$1" != -i ]; then
+  URL="http://www.comedycentral.hu/photos/007_cruton/?flipbook=napirajz-comedy-2012-1 \
+       http://www.comedycentral.hu/photos/01_csigolyaid/?flipbook=napirajz-comedy \
+       http://www.comedycentral.hu/photos/103_krumpli?flipbook=napirajz-comedy-2013 \
+       http://www.comedycentral.hu/photos/103_krumpli?flipbook=napirajz-comedy-2014"
+  PICS=`curl $URL 2>/dev/null \
+  | sed -rn 's:^.+src=.(.+)\?(width=70|height=53).+Grafitember.+$:\1:p'`
+  for i in $PICS; do
+    NODIR=$(echo $i | sed -r 's|^.*/(.+)$|\1|')
+    [ -f "$NODIR" ] && continue
+    wget "$i"
+    echo "$NODIR;$DATE;komedia"
+  done >> $FILE
+fi
 
 rm tmp
 
