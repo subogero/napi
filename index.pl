@@ -63,17 +63,16 @@ sub napi {
     my @hits;
     while (<MINE>) {
         my ($name, $date, $src) = split /[,;\n]/;
-        $date =~ s/_0/_/g; # strip leading zeroes from month and day
-        my @time = split /_/, $date;
+        my @time = split /_0?/, $date;
         my $time = ($time[0] - 1970) * 365.25
                  + ($time[1] -    1) *  30.44
                  + ($time[2] -    1);
-        push @hits, { name => $name, src => $src } if $time > $after;
+        push @hits, { name => $name, src => $src, date => $date } if $time > $after;
     }
     print "<hr><h3 align=\"center\">subogero napi</h3><hr>";
     foreach (reverse @hits) {
         (my $basename = $_->{name}) =~ s/^(.+)\..+$/$1/;
-        print "<a href=\"?mutat=$_->{name}&honnan=$_->{src}\">$basename</a> $_->{src}<br>\n";
+        print "<a href=\"?mutat=$_->{name}&honnan=$_->{src}&mikor=$_->{date}\">$basename</a> $_->{src}<br>\n";
     }
 }
 
@@ -85,8 +84,8 @@ sub tegnapi {
     open MINE, "mine.csv" or print "Could not find database.\n" and return;
     while (<MINE>) {
         if ($month) {
-            if (/^((.+)\.jpe?g);$month.*;(.*)$/i) {
-                $result = "<a href=\"?mutat=$1&honnan=$3\">$2</a> $3<br>\n" . $result;
+            if (/^((.+)\.jpe?g);($month.*);(.*)$/i) {
+                $result = "<a href=\"?mutat=$1&honnan=$4&mikor=$3\">$2</a> $4<br>\n" . $result;
             }
         } else {
             /^.+;(\d{4}_\d{2}).+/;
@@ -124,8 +123,8 @@ FORM
     (my $rajz = $_[1]) =~ s/rajz=(.*)/$1/;
     open MINE, "mine.csv" or print "Could not find database.\n" and return;
     while (<MINE>) {
-        if (/^((.*$rajz.*)\.jpe?g);.+;($src)$/i) {
-            print "<a href=\"?mutat=$1&honnan=$3\">$2</a> $3<br>\n"
+        if (/^((.*$rajz.*)\.jpe?g);(.+);($src)$/i) {
+            print "<a href=\"?mutat=$1&honnan=$4&mikor=$3\">$2</a> $4<br>\n"
         }
     }
     close MINE;
@@ -133,12 +132,15 @@ FORM
 
 ####### Show a picture and update usage statistics
 sub mutat {
-    $_[1] =~ /honnan=(.*)/;
-    my $src = $1 || 'mittomén';
-    print "<hr><h3 align=\"center\">subogero $src</h3><hr>";
-    $_[0] =~ /mutat=(.+)/;
-    print "<img src=\"$1\"><br>\n";
-    print "<a href=\"$1\">$1</a><br>\n";
+    (my $pic = shift) =~ s/mutat=//;
+    (my $title = $pic) =~ s/\..+//;
+    $title =~ s/_/ /g;
+    (my $src = shift) =~ s/honnan=//;
+    $src = $src || 'mittomén';
+    (my $day = shift) =~ s/mikor=//;
+    $day =~ s/_/./g;
+    print "<hr><h3 align=\"center\">$src <a href=\"$pic\">$title</a> $day</h3><hr>";
+    print "<img src=\"$pic\"><br>\n";
     statu;
 }
 
