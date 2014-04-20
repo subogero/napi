@@ -102,15 +102,25 @@ sub tegnapi {
 
 ####### Try to find pattern among jpg filenames in dir, print links to them
 sub keres {
+    my (@lines, %srcs);
+    open MINE, "mine.csv" or print "Could not find database.\n" and return;
+    while (<MINE>) {
+        s/\r|\n//g;
+        push @lines, $_;
+        /^[^;]+;[^;]+;([^;]+)/;
+        my $src = $1;
+        $srcs{$src} = 1 if $src;
+    }
+    close MINE;
     print <<FORM;
 <hr><h3 align="center">subogero napi keresés</h3><hr>
 <form method="GET" action="?keres">
 Forrás:
 <select name="keres">
 <option value="">mind</option>
-<option value="napi">napi</option>
-<option value="komedia">komédia</option>
-<option value="aindex">aindex</option>
+FORM
+    print "<option value=\"$_\">$_</option>\n" foreach (keys %srcs);
+    print <<FORM;
 <option value="nincs">ismeretlen</option>
 </select>
 <input type="text" name="rajz"/>
@@ -121,13 +131,11 @@ FORM
     $src =~ s/^$/.*/;
     $src =~ s/^nincs$//;
     (my $rajz = $_[1]) =~ s/rajz=(.*)/$1/;
-    open MINE, "mine.csv" or print "Could not find database.\n" and return;
-    while (<MINE>) {
+    foreach (@lines) {
         if (/^((.*$rajz.*)\.jpe?g);(.+);($src)$/i) {
             print "<a href=\"?mutat=$1&honnan=$4&mikor=$3\">$2</a> $4<br>\n"
         }
     }
-    close MINE;
 }
 
 ####### Show a picture and update usage statistics
