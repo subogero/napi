@@ -39,7 +39,7 @@ elsif ($query[0] =~ /mutat/  ) { mutat   @query }
 else                           { napi           }
 
 # Footer
-if (open MOLINO, "../molino") {
+if (open MOLINO, "molino") {
     print while <MOLINO>;
     close MOLINO;
 }
