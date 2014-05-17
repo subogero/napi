@@ -62,17 +62,19 @@ sub napi {
     open MINE, "mine.csv" or print "Could not find database.\n" and return;
     my @hits;
     while (<MINE>) {
-        my ($name, $date, $src) = split /[,;\n]/;
+        my ($name, $date, $src, $add) = split /[;\n]/;
         my @time = split /_0?/, $date;
         my $time = ($time[0] - 1970) * 365.25
                  + ($time[1] -    1) *  30.44
                  + ($time[2] -    1);
-        push @hits, { name => $name, src => $src, date => $date } if $time > $after;
+        push @hits, { name => $name, src => $src, date => $date, add => $add } if $time > $after;
     }
     print "<hr><h3 align=\"center\">subogero napi</h3><hr>";
     foreach (reverse @hits) {
         (my $basename = $_->{name}) =~ s/^(.+)\..+$/$1/;
-        print "<a href=\"?mutat=$_->{name}&honnan=$_->{src}&mikor=$_->{date}\">$basename</a> $_->{src}<br>\n";
+        my $link = "?mutat=$_->{name}&honnan=$_->{src}&mikor=$_->{date}";
+        my $info = join ". ", $_->{src}, $_->{add};
+        print "<a href=\"$link\">$basename</a> $info<br>\n";
     }
 }
 
@@ -84,8 +86,8 @@ sub tegnapi {
     open MINE, "mine.csv" or print "Could not find database.\n" and return;
     while (<MINE>) {
         if ($month) {
-            if (/^((.+)\.jpe?g);($month.*);(.*)$/i) {
-                $result = "<a href=\"?mutat=$1&honnan=$4&mikor=$3\">$2</a> $4<br>\n" . $result;
+            if (/^((.+)\.jpe?g);($month.*);(.*)(;(.+))$/i) {
+                $result = "<a href=\"?mutat=$1&honnan=$4&mikor=$3\">$2</a> $4. $6<br>\n" . $result;
             }
         } else {
             /^.+;(\d{4}_\d{2}).+/;
@@ -132,8 +134,8 @@ FORM
     $src =~ s/^nincs$//;
     (my $rajz = $_[1]) =~ s/rajz=(.*)/$1/;
     foreach (@lines) {
-        if (/^((.*$rajz.*)\.jpe?g);(.+);($src)$/i) {
-            print "<a href=\"?mutat=$1&honnan=$4&mikor=$3\">$2</a> $4<br>\n"
+        if (/^((.*$rajz.*)\.jpe?g);(.+);($src)(;(.+))$/i) {
+            print "<a href=\"?mutat=$1&honnan=$4&mikor=$3\">$2</a> $4. $6<br>\n"
         }
     }
 }
