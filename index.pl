@@ -86,7 +86,7 @@ sub tegnapi {
     open MINE, "mine.csv" or print "Could not find database.\n" and return;
     while (<MINE>) {
         if ($month) {
-            if (/^((.+)\.jpe?g);($month.*);(.*)(;(.+))$/i) {
+            if (/^((.+)\.jpe?g);($month.*);(.*)(;(.+))?$/i) {
                 $result = "<a href=\"?mutat=$1&honnan=$4&mikor=$3\">$2</a> $4. $6<br>\n" . $result;
             }
         } else {
@@ -134,7 +134,7 @@ FORM
     $src =~ s/^nincs$//;
     (my $rajz = $_[1]) =~ s/rajz=(.*)/$1/;
     foreach (@lines) {
-        if (/^((.*$rajz.*)\.jpe?g);(.+);($src)(;(.+))$/i) {
+        if (/^((.*$rajz.*)\.jpe?g);(.+);($src)(;(.+))?$/i) {
             print "<a href=\"?mutat=$1&honnan=$4&mikor=$3\">$2</a> $4. $6<br>\n"
         }
     }
