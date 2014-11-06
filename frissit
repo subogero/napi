@@ -35,13 +35,13 @@ if [ "$1" != -n -a "$1" != -c ]; then
   URLS=`curl -f http://index.hu/napirajz/ 2>/dev/null | sed -rn '/h1 class="blog-poszt-cim"/,/<\/a>/p' | sed -rn 's/^.*(http.+)".*$/\1/p'`
   for URL in $URLS; do
     curl -f ${URL} 2>/dev/null \
-    | sed -rn '/div class="lead"/,/div>/p; s/^.*og:(title|image).+="(.+)".*$/\1 \2/p;' \
-    | sed -r '/[0-9a-f]+_[0-9a-f]+_[0-9a-f]+_wm/d' >tmp
+    | sed -rn '/div class="lead"/,/div>/p; s/^.*og:(title|image).+="(.+)".*$/\1 \2/p;' >tmp
     [ `ls -l tmp | awk '{ print $5 }'` = 0 ] && echo >&2 "No pics found" && continue
     ALT=`sed -rn 's|^title ||p' tmp | sed -r 's/[ .?!]|&.+?;/_/g'`
-    URL=`sed -rn 's|^image ||p' tmp`
-    PIC=`sed -rn 's|^image .+/||p' tmp`
+    URL=`sed -rn 's|^image ||p' tmp | tail -1`
+    PIC=`sed -rn 's|^image .+/||p' tmp | tail -1`
     ADD=`sed -rn 's/^ *(.*[^ ]) *<\/div> */\1/p' tmp`
+    [ -z $ALT ] && continue
     if [ ! -f "${ALT}.jpg" ]; then
       wget ${WGETOPT} "${URL}"
       mv $PIC ${ALT}.jpg
