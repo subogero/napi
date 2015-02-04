@@ -55,7 +55,8 @@ if [ "$1" != -n -a "$1" != -i ]; then
   URL="http://www.comedycentral.hu/photos/007_cruton/?flipbook=napirajz-comedy-2012-1 \
        http://www.comedycentral.hu/photos/01_csigolyaid/?flipbook=napirajz-comedy \
        http://www.comedycentral.hu/photos/103_krumpli?flipbook=napirajz-comedy-2013 \
-       http://www.comedycentral.hu/photos/103_krumpli?flipbook=napirajz-comedy-2014"
+       http://www.comedycentral.hu/photos/103_krumpli?flipbook=napirajz-comedy-2014 \
+       http://www.comedycentral.hu/photos/408_vaku/?flipbook=napirajz-comedy-2015"
   PICS=`curl $URL 2>/dev/null \
   | sed -rn 's:^.+src=.(.+)\?(width=70|height=53).+Grafitember.+$:\1:p'`
   for i in $PICS; do
