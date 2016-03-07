@@ -16,7 +16,7 @@ DATE=$(date -Idate | sed 's/-/_/g')
 # napi
 if [ "$1" != -i -a "$1" != -c ]; then
   URL="http://napirajz.hu/"
-  curl -f ${URL} >tmp 2>/dev/null || exit 1 
+  curl -f ${URL} >tmp 2>/dev/null || exit 1
   while true; do
     PICS=`cat tmp | sed -nr 's;^.*<img .*src="(http://napirajz\.hu/wp-content/uploads/.+jpe?g).+$;\1;p'`
     [ -n "$PICS" ] && echo >&2 "regex 1" && break
@@ -37,7 +37,7 @@ if [ "$1" != -n -a "$1" != -c ]; then
     curl -f ${URL} 2>/dev/null \
     | sed -rn '/div class="lead"/,/div>/p; s/^.*og:(title|image).+="(.+)".*$/\1 \2/p;' >tmp
     [ `ls -l tmp | awk '{ print $5 }'` = 0 ] && echo >&2 "No pics found" && continue
-    ALT=`sed -rn 's|^title ||p' tmp | sed -r 's/[ .?!]|&.+?;/_/g'`
+    ALT=`sed -rn 's|^title ||p' tmp | sed -r 's/[ .?!/]|&.+?;/_/g'`
     URL=`sed -rn 's|^image ||p' tmp | tail -1`
     PIC=`sed -rn 's|^image .+/||p' tmp | tail -1`
     ADD=`sed -rn 's/^ *(.*[^ ]) *<\/div> */\1/p' tmp`
