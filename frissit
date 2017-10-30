@@ -39,6 +39,9 @@ if [ "$1" != -n -a "$1" != -c ]; then
     [ `ls -l tmp | awk '{ print $5 }'` = 0 ] && echo >&2 "No pics found" && continue
     ALT=`sed -rn 's|^title ||p' tmp | sed -r 's/[ .?!/]|&.+?;/_/g'`
     URL=`sed -rn 's|^image ||p' tmp | tail -1`
+    if [[ $URL != "http*" ]]; then
+        URL="http:"$URL
+    fi
     PIC=`sed -rn 's|^image .+/||p' tmp | tail -1`
     ADD=`sed -rn 's/^ *(.*[^ ]) *<\/div> */\1/p' tmp`
     [ -z $ALT ] && continue
