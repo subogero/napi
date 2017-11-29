@@ -30,26 +30,6 @@ if [ "$1" != -i -a "$1" != -c ]; then
   done >> $FILE
 fi
 
-# aindex
-if [ "$1" != -n -a "$1" != -c ]; then
-  URLS=`curl -f http://index.hu/napirajz/ 2>/dev/null | sed -rn '/h1 class="blog-poszt-cim"/,/<\/a>/p' | sed -rn 's/^.*(http.+)".*$/\1/p'`
-  for URL in $URLS; do
-    curl -f ${URL} 2>/dev/null \
-    | sed -rn '/div class="lead"/,/div>/p; s/^.*og:(title).+="(.+)".*$/\1 \2/p; s/^.*span class="(image)holder ".*src="([^";]+).*$/\1 \2/p;' >tmp
-    [ `ls -l tmp | awk '{ print $5 }'` = 0 ] && echo >&2 "No pics found" && continue
-    ALT=`sed -rn 's|^title ||p' tmp | sed -r 's/[ .?!/]|&.+?;/_/g'`
-    URL=`sed -rn 's|^image ||p' tmp | tail -1`
-    PIC=`sed -rn 's|^image .+/||p' tmp | tail -1`
-    ADD=`sed -rn 's/^ *(.*[^ ]) *<\/div> */\1/p' tmp`
-    [ -z $ALT ] && continue
-    if [ ! -f "${ALT}.jpg" ]; then
-      wget ${WGETOPT} "${URL}"
-      mv $PIC ${ALT}.jpg
-      echo "${ALT}.jpg;$DATE;aindex;$ADD" >> $FILE
-    fi
-  done
-fi
-
 # komédia
 if [ "$1" != -n -a "$1" != -i ]; then
   URL="http://www.comedycentral.hu/photos/007_cruton/?flipbook=napirajz-comedy-2012-1 \
